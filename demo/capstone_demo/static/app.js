@@ -11,6 +11,8 @@ let pollTimer = null;
 let ready = false;
 let busy = false;
 let variantProblems = {};
+let viewSuppressed = false;
+let selectedPreviewUrl = null;
 
 function selectedVariants() {
   return [...document.querySelectorAll('input[name="variant"]:checked')].map((input) => input.value);
@@ -103,41 +105,57 @@ function renderBars(variants) {
 }
 
 function card(v) {
-  const node = el("article", "card");
-  const head = el("div", "card-head");
-  head.appendChild(el("h3", null, LABELS[v.variant] || v.variant));
   const statusClass = ["done", "failed", "skipped"].includes(v.status) ? v.status : "running";
+  const node = el("article", "card " + statusClass);
+  const head = el("div", "card-head");
+  const identity = el("div");
+  identity.appendChild(el("h3", null, LABELS[v.variant] || v.variant));
+  identity.appendChild(el("small", null, "served as " + v.served_name));
+  head.appendChild(identity);
   head.appendChild(el("span", "status " + statusClass, STATUS_TEXT[v.status] || v.status));
   node.appendChild(head);
-  node.appendChild(el("div", "muted small", "served as " + v.served_name));
 
+  if (v.status === "skipped") {
+    node.appendChild(el("p", "muted small", "Not selected for this run."));
+    return node;
+  }
   const t = v.timings || {};
+  const primary = el("div", "primary-metric");
+  primary.appendChild(el("strong", null, seconds(t.measured_parse_s)));
+  primary.appendChild(el("span", null, "warm page parse · c=1"));
+  node.appendChild(primary);
+  if (v.status === "pending" || v.status === "starting_server" || v.status === "parsing") {
+    node.appendChild(el("p", "muted small", v.status === "starting_server" ? "Checking checkpoint and loading on GPU…" : v.status === "parsing" ? "Parsing the uploaded page…" : "Waiting for the previous model…"));
+    return node;
+  }
   const rows = [
-    ["Page parse (measured)", seconds(t.measured_parse_s)],
-    ["Page parse (first pass)", seconds(t.first_parse_s)],
-    ["Server verify + ready", seconds(t.server_ready_s)],
-    ["Client pipeline init", seconds(t.pipeline_init_s)],
+    ["First page parse", seconds(t.first_parse_s)],
+    ["Server ready", seconds(t.server_ready_s)],
+    ["Pipeline setup", seconds(t.pipeline_init_s)],
     ["Parsed regions", v.json_regions ?? "—"],
     ["Text similarity to BF16", typeof v.similarity_to_bf16 === "number" ? (100 * v.similarity_to_bf16).toFixed(1) + "%" : "—"],
-    ["Peak GPU memory (device)", v.gpu_memory ? `${v.gpu_memory.peak_used_mib} / ${v.gpu_memory.total_mib} MiB` : "—"],
+    ["Peak device memory", v.gpu_memory ? `${v.gpu_memory.peak_used_mib} / ${v.gpu_memory.total_mib} MiB` : "—"],
   ];
-  const dl = el("dl");
-  for (const [k, value] of rows) {
-    dl.appendChild(el("dt", null, k));
+  const dl = el("dl", "metrics");
+  for (const [key, value] of rows) {
+    dl.appendChild(el("dt", null, key));
     dl.appendChild(el("dd", null, value));
   }
   node.appendChild(dl);
 
-  if (v.error) {
-    node.appendChild(el("pre", "error", v.error + (v.error_log_tail ? "\n\n--- log tail ---\n" + v.error_log_tail : "")));
-  }
+  if (v.error) node.appendChild(el("pre", "error", v.error + (v.error_log_tail ? "\n\n--- log tail ---\n" + v.error_log_tail : "")));
   if (typeof v.markdown === "string") {
-    node.appendChild(el("div", "muted small", "Full parsed Markdown (raw text, not rendered)"));
-    node.appendChild(el("pre", null, v.markdown));
+    node.appendChild(el("p", "excerpt", v.markdown.slice(0, 170).trim() + (v.markdown.length > 170 ? "…" : "")));
+    const details = el("details", "output-view");
+    details.appendChild(el("summary", null, "Full Markdown"));
+    details.appendChild(el("pre", null, v.markdown));
+    node.appendChild(details);
   }
   if (v.structured_json !== null && v.structured_json !== undefined) {
-    node.appendChild(el("div", "muted small", "Full structured JSON (raw text, not rendered)"));
-    node.appendChild(el("pre", null, JSON.stringify(v.structured_json, null, 2)));
+    const details = el("details", "output-view");
+    details.appendChild(el("summary", null, "Full structured JSON"));
+    details.appendChild(el("pre", null, JSON.stringify(v.structured_json, null, 2)));
+    node.appendChild(details);
   }
   if (v.status === "done" && Object.hasOwn(LABELS, v.variant) && v.outputs) {
     const links = el("div", "downloads");
@@ -156,12 +174,12 @@ function card(v) {
 let currentRunId = null;
 function render(result) {
   currentRunId = result.run_id;
+  clearSelectedPreview();
+  $("empty").hidden = true;
+  $("results-heading").hidden = false;
   $("summary").hidden = false;
   const s = result.settings || {};
-  $("settings").textContent = result.status === "queued" ? "Queued…" :
-    `Run ${result.run_id.slice(0, 8)} · ${result.status} · layout on ${s.layout_device} · ` +
-    `gpu_mem_util ${s.gpu_memory_utilization} · max_num_seqs ${s.max_num_seqs} · warmup ${s.warmup ? "on" : "off"}. ` +
-    "Speedup and similarity are shown only when BF16 ran successfully; similarity is a text diff, not accuracy.";
+  $("settings").textContent = `Run ${result.run_id.slice(0, 8)} · ${result.status} · layout on ${s.layout_device} · ${s.gpu_memory_utilization} GPU memory budget · warmup ${s.warmup ? "on" : "off"}. Latency is for this page and machine, not the study benchmark; text similarity is not accuracy.`;
   renderBars(result.variants || []);
   const columns = $("columns");
   columns.replaceChildren(...(result.variants || []).map(card));
@@ -169,9 +187,10 @@ function render(result) {
 
 function showPreview(runId, kind) {
   const img = $("preview");
-  if (kind === "pdf") {
+  if (kind !== "png" && kind !== "jpeg") {
     img.hidden = true;
-    $("preview-note").textContent = "PDF input (no inline preview)";
+    img.removeAttribute("src");
+    $("preview-note").textContent = kind === "pdf" ? "PDF input · preview unavailable" : "Preview unavailable";
   } else {
     img.hidden = false;
     img.src = `/api/runs/${runId}/input`;
@@ -179,19 +198,44 @@ function showPreview(runId, kind) {
   }
 }
 
+function clearSelectedPreview() {
+  $("empty-preview").hidden = true;
+  $("empty-preview").removeAttribute("src");
+  if (selectedPreviewUrl) URL.revokeObjectURL(selectedPreviewUrl);
+  selectedPreviewUrl = null;
+}
+
+function clearPreviousView() {
+  clearSelectedPreview();
+  viewSuppressed = true;
+  currentRunId = null;
+  $("summary").hidden = true;
+  $("results-heading").hidden = true;
+  $("empty").hidden = false;
+  $("columns").replaceChildren();
+  $("bars").replaceChildren();
+  $("settings").textContent = "";
+  $("preview").hidden = true;
+  $("preview").removeAttribute("src");
+  $("preview-note").textContent = "";
+  $("history").value = "";
+}
+
 async function follow(runId) {
   clearTimeout(pollTimer);
   const tick = async () => {
     try {
       const result = await getJSON(`/api/runs/${runId}`);
-      render(result);
-      if (result.input) showPreview(runId, result.input.kind);
+      if (!viewSuppressed) {
+        render(result);
+        if (result.input) showPreview(runId, result.input.kind);
+      }
       if (["running", "queued"].includes(result.status)) {
         pollTimer = setTimeout(tick, 1000);
         return;
       }
       pollTimer = null;
-      setMessage(`Run finished: ${result.status}`, result.status !== "done");
+      setMessage(viewSuppressed ? "Previous run finished. Choose a page to run again." : `Run finished: ${result.status}`, !viewSuppressed && result.status !== "done");
       loadHistory();
       loadStatus();
     } catch (error) {
@@ -202,9 +246,40 @@ async function follow(runId) {
   pollTimer = setTimeout(tick, 0);
 }
 
+$("empty-preview").addEventListener("error", (event) => {
+  if (!selectedPreviewUrl || event.target.getAttribute("src") !== selectedPreviewUrl) return;
+  clearSelectedPreview();
+  $("empty-note").textContent = "Preview unavailable. The server will verify this file when you run it.";
+});
+
 $("file").addEventListener("change", (event) => {
-  selectedFile = event.target.files[0] || null;
-  $("file-label").textContent = selectedFile ? `${selectedFile.name} (${(selectedFile.size / 1048576).toFixed(2)} MB)` : "Choose a page";
+  clearPreviousView();
+  const file = event.target.files[0] || null;
+  if (file && !/\.(png|jpe?g|pdf)$/i.test(file.name)) {
+    selectedFile = null;
+    event.target.value = "";
+    $("file-label").textContent = "Choose a different page";
+    $("empty-title").textContent = "This file cannot be parsed";
+    $("empty-note").textContent = "Choose a PNG, JPEG, or single-page PDF. The previous input and results have been cleared.";
+    setMessage("Unsupported file. Upload a PNG, JPEG, or single-page PDF instead.", true);
+  } else {
+    selectedFile = file;
+    $("file-label").textContent = file ? `${file.name} (${(file.size / 1048576).toFixed(2)} MB)` : "Choose a page";
+    $("empty-title").textContent = file ? "Page ready to compare" : "Your next page starts here";
+    if (!file) {
+      $("empty-note").textContent = "Choose a page, select the models, then compare their real outputs side by side.";
+    } else if (file.name.toLowerCase().endsWith(".pdf")) {
+      $("empty-note").textContent = "PDF selected. Inline preview is unavailable; the server will validate its single page before running.";
+    } else {
+      $("empty-note").textContent = "Run the selected models to see outputs for this new page.";
+    }
+    if (file && /\.(png|jpe?g)$/i.test(file.name) && /^image\/(png|jpeg)$/.test(file.type)) {
+      selectedPreviewUrl = URL.createObjectURL(file);
+      $("empty-preview").src = selectedPreviewUrl;
+      $("empty-preview").hidden = false;
+    }
+    setMessage(file ? "Page selected. Run the chosen models to see new results." : "");
+  }
   updateRunButton(busy);
 });
 
@@ -223,16 +298,30 @@ $("run").addEventListener("click", async () => {
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || response.statusText);
+    busy = true;
+    viewSuppressed = false;
     setMessage(`Running ${selected.join(" → ")} sequentially. Each model server is started, verified, used, and stopped in turn.`);
     follow(data.run_id);
   } catch (error) {
+    selectedFile = null;
+    $("file").value = "";
+    $("file-label").textContent = "Choose a different page";
+    $("empty-title").textContent = "This page could not be used";
+    $("empty-note").textContent = "Choose a valid PNG, JPEG, or single-page PDF. No model output was created for this upload.";
     setMessage(error.message, true);
     loadStatus();
   }
 });
 
 $("history").addEventListener("change", (event) => {
-  if (event.target.value) follow(event.target.value);
+  if (event.target.value) {
+    selectedFile = null;
+    $("file").value = "";
+    $("file-label").textContent = "Choose a page";
+    viewSuppressed = false;
+    follow(event.target.value);
+    updateRunButton(busy);
+  }
 });
 
 loadStatus();

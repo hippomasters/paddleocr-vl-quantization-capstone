@@ -29,7 +29,7 @@ skipped or incomplete outputs, and symlinks are not served.
 
 | Piece | State |
 |---|---|
-| UI, upload validation, orchestration, process lifecycle | 52 CPU tests pass; the real localhost browser upload and sequential run completed |
+| UI, upload validation, orchestration, process lifecycle | 56 CPU tests pass; real localhost browser uploads and sequential GPU runs completed |
 | Real vLLM + PaddleOCR adapter | All three completed on a synthetic smoke page on the RTX 4070 Laptop 8 GB GPU |
 | BF16 → W8A16 → W4A16 sequentially | Verified for that page at 0.72 GPU-memory utilization, 8192 max model length and one sequence; see `../evidence/laptop_smoke_20261030/` |
 | Layout (PP-DocLayoutV3) on CPU while vLLM uses the GPU | Verified for that page; layout time is included in page-parse wall time, not isolated |
@@ -37,8 +37,13 @@ skipped or incomplete outputs, and symlinks are not served.
 | PDF input | A one-page PDF completed all three models on the laptop. Poppler `pdfinfo` now rejects encrypted, invalid, or multi-page PDFs before starting GPU work; users must export the desired page first. Other PDFs remain unverified. |
 
 The synthetic page is **not** a benchmark, accuracy test, examiner-selected page, or proof that
-all image/PDF layouts will work. The 7-minute browser recording in the local evidence folder
-shows the real laptop run; the actual Markdown/JSON and timings are saved separately.
+all image/PDF layouts will work. The primary **48-second** video in
+`../evidence/presentation_demo_20261030/` uses the supplied capstone presentation's
+navy/teal/gold colors and Times New Roman; captions explain the real browser run and unchanged
+loading waits are shortened. The original 7-minute recording and all source frames/logs stay in
+the separate local evidence folder. Unsupported formats, corrupt files and multi-page PDFs are
+rejected without showing a previous page's preview or output; choose/replace a page to recover.
+The UI previews selected PNG/JPEG files before running and labels PDFs as preview-unavailable.
 
 ## Host setup (nothing is installed by this package)
 
@@ -73,4 +78,9 @@ throughput and must not be compared with it as a replication.
 
 ## Tests
 
-`cd demo && PYTHONPATH=. python -m unittest discover -s tests -v` (52 CPU tests; no GPU or network).
+`cd demo && PYTHONPATH=. python -m unittest discover -s tests -v` (56 CPU tests; no GPU or network).
+
+The optional `tools/compact_video.py` editor needs Pillow, FFmpeg and a completed real browser
+capture; its storyboard tests are device-free. Its captions are added below authentic screenshots
+and its provenance records every selected source frame, so shortened waits cannot masquerade as
+real-time model startup.

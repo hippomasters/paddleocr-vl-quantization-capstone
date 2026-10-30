@@ -1,0 +1,23 @@
+{
+  "variant": "BF16",
+  "served_model_name": "BF16_W16A16",
+  "layout_device": "cpu",
+  "concurrency": 1,
+  "pipeline_init_s": 2.102341596999395,
+  "passes": [
+    {
+      "kind": "warmup",
+      "seconds": 17.30091710799934
+    },
+    {
+      "kind": "measured",
+      "seconds": 8.888527626000723
+    }
+  ],
+  "measured_parse_s": 8.888527626000723,
+  "scope": "parse_one_image wall time: layout + VLM requests + Markdown/JSON save",
+  "outputs": {
+    "markdown": "/home/Master/Documents/Hermes/capstone-evidence/laptop-runs/0973cdefa5d6f13a098a2c34863a2fe5/BF16/page.md",
+    "json": "/home/Master/Documents/Hermes/capstone-evidence/laptop-runs/0973cdefa5d6f13a098a2c34863a2fe5/BF16/page.json"
+  }
+}

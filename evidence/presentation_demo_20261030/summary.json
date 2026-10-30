@@ -1,0 +1,140 @@
+{
+  "scope": "real RTX 4070 Laptop sequential BF16/W8A16/W4A16 on one synthetic page; not a benchmark, all-input guarantee or examiner page",
+  "run_id": "0973cdefa5d6f13a098a2c34863a2fe5",
+  "created_utc": "2026-10-30T18:25:58+00:00",
+  "finished_utc": "2026-10-30T18:31:46+00:00",
+  "input_sha256": "b8a30018bfb0b4ce55ab726567506abd93997dd3f774e92fa9f243d39be45697",
+  "settings": {
+    "layout_device": "cpu",
+    "layout_vlm_same_gpu_validated": false,
+    "gpu_memory_utilization": 0.72,
+    "max_model_len": 8192,
+    "max_num_seqs": 1,
+    "max_num_batched_tokens": 8192,
+    "warmup": true,
+    "concurrency": 1
+  },
+  "variants": [
+    {
+      "variant": "BF16",
+      "served_name": "BF16_W16A16",
+      "status": "done",
+      "timings": {
+        "server_ready_s": 77.0793005710002,
+        "client_wall_s": 37.92163818199879,
+        "pipeline_init_s": 2.102341596999395,
+        "first_parse_s": 17.30091710799934,
+        "measured_parse_s": 8.888527626000723
+      },
+      "gpu_memory": {
+        "peak_used_mib": 5596,
+        "total_mib": 8188
+      },
+      "json_regions": 4,
+      "markdown": {
+        "path": "outputs/BF16.md",
+        "bytes": 281,
+        "sha256": "f962b04ec894263396a3f521b9fac2b49cd6de1e47355003082be6ec73846f00"
+      },
+      "json": {
+        "path": "outputs/BF16.json",
+        "bytes": 7055,
+        "sha256": "b73f8fe16f4f740551d19597b097f476a3855170d166577c2c642c14be7329a0"
+      },
+      "timing": {
+        "path": "outputs/BF16.timing.json",
+        "bytes": 703,
+        "sha256": "6a0a4f45ae681b8ddffa030b25eebc0840986c393896aa237fb4d31ee278cf2d"
+      }
+    },
+    {
+      "variant": "W8A16",
+      "served_name": "GPTQ_W8A16_G128",
+      "status": "done",
+      "timings": {
+        "server_ready_s": 71.06276125800105,
+        "client_wall_s": 35.831820319001054,
+        "pipeline_init_s": 1.8307800350012258,
+        "first_parse_s": 17.255684703999577,
+        "measured_parse_s": 8.65734707699994
+      },
+      "gpu_memory": {
+        "peak_used_mib": 5602,
+        "total_mib": 8188
+      },
+      "json_regions": 4,
+      "markdown": {
+        "path": "outputs/W8A16.md",
+        "bytes": 281,
+        "sha256": "f962b04ec894263396a3f521b9fac2b49cd6de1e47355003082be6ec73846f00"
+      },
+      "json": {
+        "path": "outputs/W8A16.json",
+        "bytes": 7055,
+        "sha256": "b73f8fe16f4f740551d19597b097f476a3855170d166577c2c642c14be7329a0"
+      },
+      "timing": {
+        "path": "outputs/W8A16.timing.json",
+        "bytes": 710,
+        "sha256": "95c9695bcf870f03028d508a6c9d009aebb831c432741e1655fbd8e8ac3e25c1"
+      }
+    },
+    {
+      "variant": "W4A16",
+      "served_name": "GPTQ_W4A16_G128",
+      "status": "done",
+      "timings": {
+        "server_ready_s": 82.08538794299966,
+        "client_wall_s": 43.90237017599975,
+        "pipeline_init_s": 2.628727503000846,
+        "first_parse_s": 20.494103212000482,
+        "measured_parse_s": 9.333066630999383
+      },
+      "gpu_memory": {
+        "peak_used_mib": 5614,
+        "total_mib": 8188
+      },
+      "json_regions": 4,
+      "markdown": {
+        "path": "outputs/W4A16.md",
+        "bytes": 281,
+        "sha256": "f962b04ec894263396a3f521b9fac2b49cd6de1e47355003082be6ec73846f00"
+      },
+      "json": {
+        "path": "outputs/W4A16.json",
+        "bytes": 7055,
+        "sha256": "b73f8fe16f4f740551d19597b097f476a3855170d166577c2c642c14be7329a0"
+      },
+      "timing": {
+        "path": "outputs/W4A16.timing.json",
+        "bytes": 711,
+        "sha256": "7c5422ee0e814c3711e50c17066ea09b64a8f27e2abd9078ec3c4a55f49302c4"
+      }
+    }
+  ],
+  "assets": {
+    "input": {
+      "path": "synthetic-page.png",
+      "bytes": 41082,
+      "sha256": "b8a30018bfb0b4ce55ab726567506abd93997dd3f774e92fa9f243d39be45697"
+    },
+    "video": {
+      "path": "presentation-demo-short.mp4",
+      "bytes": 441100,
+      "sha256": "2136ad732720bcbb8edc34594b21c3777f3814113ea2f7915afc036c0a2f7820"
+    },
+    "final_frame": {
+      "path": "final-frame-captioned.png",
+      "bytes": 109232,
+      "sha256": "ca9c2f66ee32cace04f23020ad33289e5eaa3c19592f65e98a0eeb239e1d6ced"
+    }
+  },
+  "video": {
+    "duration_s": 48.0,
+    "keyframes": 13,
+    "source_frames": 119,
+    "waiting_shortened": true,
+    "captions": "added outside genuine screenshots",
+    "theme_sha256": "90c5caf2ac0444cf34bc80766d3c0ef6c955c3d241c97c0e7f45d5ce9a0f2657"
+  }
+}

@@ -3,51 +3,75 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PaddleOCR-VL Quantization Demo</title>
+<title>PaddleOCR-VL · Local comparison</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<header>
-  <div>
-    <h1>PaddleOCR-VL-1.6 on one 8 GB GPU</h1>
-    <p class="sub">Choose one, two or all three; selected models run sequentially on the same page</p>
+<header class="topbar">
+  <div class="identity">
+    <span class="monogram" aria-hidden="true">VL</span>
+    <div><p class="eyebrow">LOCAL GPU DEMO</p><h1>Document parsing comparison</h1></div>
   </div>
   <div id="host-status" class="pill">Checking host…</div>
 </header>
 
 <main>
-  <section class="panel" id="controls">
-    <label class="drop" for="file">
-      <input id="file" type="file" accept="image/png,image/jpeg,application/pdf">
-      <span id="file-label">Choose a page (PNG, JPEG or single-page PDF)</span>
-    </label>
-    <fieldset id="models" class="models">
-      <legend>Models to run</legend>
-      <label><input type="checkbox" name="variant" value="BF16" checked> BF16</label>
-      <label><input type="checkbox" name="variant" value="W8A16" checked> GPTQ W8A16</label>
-      <label><input type="checkbox" name="variant" value="W4A16" checked> GPTQ W4A16</label>
-    </fieldset>
-    <button id="run" type="button" disabled>Run selected</button>
-    <select id="history" aria-label="Load a stored run"><option value="">Stored runs…</option></select>
-    <p id="message" class="message" role="status"></p>
+  <section class="panel setup" id="controls" aria-label="Set up a comparison">
+    <div class="setup-grid">
+      <div class="control-group">
+        <span class="step">01 / PAGE</span>
+        <label class="drop" for="file">
+          <input id="file" type="file" accept=".png,.jpg,.jpeg,.pdf,image/png,image/jpeg,application/pdf" aria-describedby="file-help">
+          <span id="file-label">Choose a page</span>
+          <span id="file-help">PNG, JPEG or single-page PDF · click to upload or replace</span>
+        </label>
+      </div>
+      <div class="control-group">
+        <span class="step">02 / MODELS</span>
+        <fieldset id="models" class="models">
+          <legend class="visually-hidden">Models to run</legend>
+          <label><input type="checkbox" name="variant" value="BF16" checked><span>BF16</span></label>
+          <label><input type="checkbox" name="variant" value="W8A16" checked><span>W8A16</span></label>
+          <label><input type="checkbox" name="variant" value="W4A16" checked><span>W4A16</span></label>
+        </fieldset>
+        <span class="helper">Selected models run one at a time on the same GPU.</span>
+      </div>
+      <div class="control-group action-group">
+        <span class="step">03 / RUN</span>
+        <button id="run" type="button" disabled>Run comparison <span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    <div class="utility-row">
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+      <label class="history-label" for="history">Previous run <select id="history" aria-label="Load a stored run"><option value="">Select…</option></select></label>
+    </div>
   </section>
 
-  <section class="panel" id="summary" hidden>
+  <section id="empty" class="empty-state">
+    <span class="empty-mark" aria-hidden="true">01 / 02 / 03</span>
+    <img id="empty-preview" alt="Newly selected page, not yet parsed" hidden>
+    <strong id="empty-title">Your next page starts here</strong>
+    <p id="empty-note">Choose a page, select the models, then compare their real outputs side by side.</p>
+  </section>
+
+  <section class="panel summary" id="summary" hidden>
     <div class="summary-head">
-      <div class="preview"><img id="preview" alt="Input page"><p id="preview-note" class="muted"></p></div>
+      <div class="preview">
+        <p class="step">INPUT PAGE</p>
+        <div class="preview-stage"><img id="preview" alt="Submitted input page" hidden><p id="preview-note" class="muted"></p></div>
+      </div>
       <div class="chart">
-        <h2>Page latency (warm, c=1)</h2>
+        <div class="section-label"><div><p class="step">COMPARISON</p><h2>Warm page latency</h2></div><span class="muted small">c=1 · this laptop</span></div>
         <div id="bars"></div>
         <p id="settings" class="muted small"></p>
       </div>
     </div>
   </section>
 
-  <section id="columns" class="columns"></section>
+  <div id="results-heading" class="results-heading" hidden><h2>Model results</h2><span class="muted small">Expand a model to inspect its full output.</span></div>
+  <section id="columns" class="columns" aria-label="Model results"></section>
 
-  <footer>
-    <p id="adapter-note" class="muted small"></p>
-  </footer>
+  <footer><details class="footnote"><summary>Run details and limitations</summary><p id="adapter-note" class="muted small"></p></details></footer>
 </main>
 <script src="/app.js"></script>
 </body>

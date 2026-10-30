@@ -1,0 +1,270 @@
+{
+    "input_path": "/home/Master/Documents/Hermes/capstone-evidence/laptop-runs/0973cdefa5d6f13a098a2c34863a2fe5/page.png",
+    "page_index": null,
+    "page_count": null,
+    "width": 1200,
+    "height": 1600,
+    "model_settings": {
+        "use_doc_preprocessor": false,
+        "use_layout_detection": true,
+        "use_chart_recognition": false,
+        "use_seal_recognition": false,
+        "use_ocr_for_image_block": false,
+        "format_block_content": false,
+        "merge_layout_blocks": true,
+        "markdown_ignore_labels": [],
+        "return_layout_polygon_points": true
+    },
+    "parsing_res_list": [
+        {
+            "block_label": "paragraph_title",
+            "block_content": "Synthetic laptop GPU smoke test",
+            "block_bbox": [
+                74,
+                102,
+                612,
+                139
+            ],
+            "block_id": 0,
+            "block_order": 1,
+            "group_id": 0,
+            "block_polygon_points": [
+                [
+                    74.0,
+                    102.0
+                ],
+                [
+                    612.0,
+                    102.0
+                ],
+                [
+                    612.0,
+                    139.0
+                ],
+                [
+                    74.0,
+                    139.0
+                ]
+            ]
+        },
+        {
+            "block_label": "paragraph_title",
+            "block_content": "PaddleOCR-VL-1.6 three-variant verification",
+            "block_bbox": [
+                75,
+                222,
+                778,
+                257
+            ],
+            "block_id": 1,
+            "block_order": 2,
+            "group_id": 1,
+            "block_polygon_points": [
+                [
+                    75.0,
+                    222.0
+                ],
+                [
+                    778.0,
+                    222.0
+                ],
+                [
+                    778.0,
+                    257.0
+                ],
+                [
+                    75.0,
+                    257.0
+                ]
+            ]
+        },
+        {
+            "block_label": "text",
+            "block_content": "This page is not a benchmark or presentation sample.",
+            "block_bbox": [
+                74,
+                341,
+                947,
+                380
+            ],
+            "block_id": 2,
+            "block_order": 3,
+            "group_id": 2,
+            "block_polygon_points": [
+                [
+                    74.0,
+                    341.0
+                ],
+                [
+                    947.0,
+                    341.0
+                ],
+                [
+                    947.0,
+                    380.0
+                ],
+                [
+                    74.0,
+                    380.0
+                ]
+            ]
+        },
+        {
+            "block_label": "table",
+            "block_content": "<table><tr><td>Variant</td><td>Precision</td></tr><tr><td>BF16</td><td>16-bit</td></tr><tr><td>W4A16</td><td>4-bit weights</td></tr></table>",
+            "block_bbox": [
+                78,
+                497,
+                1001,
+                752
+            ],
+            "block_id": 3,
+            "block_order": null,
+            "group_id": 3,
+            "block_polygon_points": [
+                [
+                    78.0,
+                    497.0
+                ],
+                [
+                    1001.0,
+                    497.0
+                ],
+                [
+                    1001.0,
+                    752.0
+                ],
+                [
+                    78.0,
+                    752.0
+                ]
+            ]
+        }
+    ],
+    "layout_det_res": {
+        "input_path": null,
+        "page_index": null,
+        "boxes": [
+            {
+                "cls_id": 17,
+                "label": "paragraph_title",
+                "score": 0.4638327360153198,
+                "coordinate": [
+                    74,
+                    102,
+                    612,
+                    139
+                ],
+                "order": 1,
+                "polygon_points": [
+                    [
+                        74.0,
+                        102.0
+                    ],
+                    [
+                        612.0,
+                        102.0
+                    ],
+                    [
+                        612.0,
+                        139.0
+                    ],
+                    [
+                        74.0,
+                        139.0
+                    ]
+                ]
+            },
+            {
+                "cls_id": 17,
+                "label": "paragraph_title",
+                "score": 0.4639929234981537,
+                "coordinate": [
+                    75,
+                    222,
+                    778,
+                    257
+                ],
+                "order": 2,
+                "polygon_points": [
+                    [
+                        75.0,
+                        222.0
+                    ],
+                    [
+                        778.0,
+                        222.0
+                    ],
+                    [
+                        778.0,
+                        257.0
+                    ],
+                    [
+                        75.0,
+                        257.0
+                    ]
+                ]
+            },
+            {
+                "cls_id": 22,
+                "label": "text",
+                "score": 0.8074433207511902,
+                "coordinate": [
+                    74,
+                    341,
+                    947,
+                    380
+                ],
+                "order": 3,
+                "polygon_points": [
+                    [
+                        74.0,
+                        341.0
+                    ],
+                    [
+                        947.0,
+                        341.0
+                    ],
+                    [
+                        947.0,
+                        380.0
+                    ],
+                    [
+                        74.0,
+                        380.0
+                    ]
+                ]
+            },
+            {
+                "cls_id": 21,
+                "label": "table",
+                "score": 0.9619252681732178,
+                "coordinate": [
+                    78,
+                    497,
+                    1001,
+                    752
+                ],
+                "order": null,
+                "polygon_points": [
+                    [
+                        78.0,
+                        497.0
+                    ],
+                    [
+                        1001.0,
+                        497.0
+                    ],
+                    [
+                        1001.0,
+                        752.0
+                    ],
+                    [
+                        78.0,
+                        752.0
+                    ]
+                ]
+            }
+        ]
+    }
+}
