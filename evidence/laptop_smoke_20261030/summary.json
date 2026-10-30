@@ -1,0 +1,152 @@
+{
+  "scope": "real laptop RTX 4070 GPU, synthetic page only; warm single-page c=1; NOT original L4 benchmark or accuracy validation",
+  "run_id": "575bb4ee8ee3bb1333d9452220724a45",
+  "input_sha256": "b8a30018bfb0b4ce55ab726567506abd93997dd3f774e92fa9f243d39be45697",
+  "settings": {
+    "layout_device": "cpu",
+    "layout_vlm_same_gpu_validated": false,
+    "gpu_memory_utilization": 0.72,
+    "max_model_len": 8192,
+    "max_num_seqs": 1,
+    "max_num_batched_tokens": 8192,
+    "warmup": true,
+    "concurrency": 1
+  },
+  "created_utc": "2026-10-30T07:48:38+00:00",
+  "finished_utc": "2026-10-30T07:56:48+00:00",
+  "variants": [
+    {
+      "variant": "BF16",
+      "status": "done",
+      "served_name": "BF16_W16A16",
+      "timings": {
+        "server_ready_s": 108.12606234699888,
+        "client_wall_s": 50.911868424000204,
+        "pipeline_init_s": 3.4240450899997086,
+        "first_parse_s": 24.349857231998612,
+        "measured_parse_s": 10.145588048999343
+      },
+      "gpu_memory": {
+        "peak_used_mib": 5596,
+        "total_mib": 8188
+      },
+      "json_regions": 4,
+      "similarity_to_bf16": null,
+      "markdown": {
+        "path": "outputs/BF16.md",
+        "bytes": 281,
+        "sha256": "f962b04ec894263396a3f521b9fac2b49cd6de1e47355003082be6ec73846f00"
+      },
+      "structured_json": {
+        "path": "outputs/BF16.json",
+        "bytes": 7055,
+        "sha256": "53cbb70d7461cb6721442a768f20a39a710d82953d08bf34a8930b3c5aa81ca3"
+      },
+      "timing": {
+        "path": "outputs/BF16.timing.json",
+        "bytes": 707,
+        "sha256": "7ade4c6562d7924b64b80435d3e8b696120bb34a0a79ff204a4157bae57ce34d"
+      }
+    },
+    {
+      "variant": "W8A16",
+      "status": "done",
+      "served_name": "GPTQ_W8A16_G128",
+      "timings": {
+        "server_ready_s": 113.12949560800007,
+        "client_wall_s": 48.092457015000036,
+        "pipeline_init_s": 2.482425531001354,
+        "first_parse_s": 24.384840394001003,
+        "measured_parse_s": 9.561298806000195
+      },
+      "gpu_memory": {
+        "peak_used_mib": 5602,
+        "total_mib": 8188
+      },
+      "json_regions": 4,
+      "similarity_to_bf16": 1.0,
+      "markdown": {
+        "path": "outputs/W8A16.md",
+        "bytes": 281,
+        "sha256": "f962b04ec894263396a3f521b9fac2b49cd6de1e47355003082be6ec73846f00"
+      },
+      "structured_json": {
+        "path": "outputs/W8A16.json",
+        "bytes": 7055,
+        "sha256": "53cbb70d7461cb6721442a768f20a39a710d82953d08bf34a8930b3c5aa81ca3"
+      },
+      "timing": {
+        "path": "outputs/W8A16.timing.json",
+        "bytes": 711,
+        "sha256": "d160017cfec282b6b97ce7520314444a2defc45c7be5b025e6878023d86fb999"
+      }
+    },
+    {
+      "variant": "W4A16",
+      "status": "done",
+      "served_name": "GPTQ_W4A16_G128",
+      "timings": {
+        "server_ready_s": 118.1328470949993,
+        "client_wall_s": 50.304765028000475,
+        "pipeline_init_s": 3.3610332700009167,
+        "first_parse_s": 24.40303450799911,
+        "measured_parse_s": 10.691579829999682
+      },
+      "gpu_memory": {
+        "peak_used_mib": 5614,
+        "total_mib": 8188
+      },
+      "json_regions": 4,
+      "similarity_to_bf16": 1.0,
+      "markdown": {
+        "path": "outputs/W4A16.md",
+        "bytes": 281,
+        "sha256": "f962b04ec894263396a3f521b9fac2b49cd6de1e47355003082be6ec73846f00"
+      },
+      "structured_json": {
+        "path": "outputs/W4A16.json",
+        "bytes": 7055,
+        "sha256": "53cbb70d7461cb6721442a768f20a39a710d82953d08bf34a8930b3c5aa81ca3"
+      },
+      "timing": {
+        "path": "outputs/W4A16.timing.json",
+        "bytes": 713,
+        "sha256": "d4f819d5b16735d3776487f2f71fd5e2afcc4c944ac9c30f91d6aa79c01e1a1c"
+      }
+    }
+  ],
+  "assets": {
+    "synthetic_input": {
+      "path": "synthetic-page.png",
+      "bytes": 41082,
+      "sha256": "b8a30018bfb0b4ce55ab726567506abd93997dd3f774e92fa9f243d39be45697"
+    },
+    "video": {
+      "path": "laptop-gpu-demo-synthetic-smoke.mp4",
+      "bytes": 3098637,
+      "sha256": "d539ea7d2d38ba49999d248b1ce60106cc05ce32a9e63fb6a34b3067ee41e14a"
+    },
+    "final_frame": {
+      "path": "final-comparison.png",
+      "bytes": 216085,
+      "sha256": "7b49e3af0d3cd3ffd3f837d5fee21a58a9b320ae4b97a28b3bf65f169e49d922"
+    }
+  },
+  "video_probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1440,
+        "height": 858,
+        "r_frame_rate": "24/1"
+      }
+    ],
+    "format": {
+      "duration": "427.000000",
+      "size": "3098637"
+    }
+  },
+  "hub_models": "W8A16 and W4A16 used independently downloaded, manifest-verified private snapshots; BF16 used verified local base checkpoint"
+}

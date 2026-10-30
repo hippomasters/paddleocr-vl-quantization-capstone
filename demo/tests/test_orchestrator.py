@@ -96,6 +96,7 @@ class OrchestratorTests(unittest.TestCase):
         for variant in ("BF16", "W8A16", "W4A16"):
             expected += [("start", variant), ("ready", variant), ("client", variant), ("stop", variant)]
         self.assertEqual(runner.events, expected)
+        self.assertEqual(runner.stopped_ports, [self.config.vllm_port] * 3)
         self.assertEqual(result["status"], "done")
         statuses = [v["status"] for v in result["variants"]]
         self.assertEqual(statuses, ["done", "done", "done"])

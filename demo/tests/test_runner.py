@@ -23,6 +23,22 @@ http.server.HTTPServer(("127.0.0.1", int(sys.argv[1])), H).serve_forever()
 """
 
 
+DELAYED_CHILD = r"""
+import http.server, json, signal, sys, time
+def finish(signum, frame):
+    time.sleep(0.8)
+    raise SystemExit(0)
+signal.signal(signal.SIGTERM, finish)
+class H(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        body = json.dumps({"data": [{"id": "NAME"}]}).encode()
+        self.send_response(200); self.send_header("Content-Length", str(len(body)))
+        self.end_headers(); self.wfile.write(body)
+    def log_message(self, *a): pass
+http.server.HTTPServer(("127.0.0.1", int(sys.argv[1])), H).serve_forever()
+"""
+PARENT = "import subprocess,sys; subprocess.run([sys.executable,'-c',sys.argv[2],sys.argv[1]])"
+
 def free_port():
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
@@ -49,6 +65,19 @@ class SubprocessRunnerTests(unittest.TestCase):
         self.assertIsNotNone(handle.poll())
         time.sleep(0.2)
         self.assertFalse(self.runner.port_in_use(port))
+
+    def test_stop_waits_for_grandchild_to_release_port(self):
+        port = free_port()
+        handle = self.runner.start_server(
+            [sys.executable, "-c", PARENT, str(port), DELAYED_CHILD], {}, self.log
+        )
+        try:
+            self.runner.wait_ready(handle, port, "NAME", timeout_s=20)
+            self.runner.stop_server(handle, port=port)
+            self.assertFalse(self.runner.port_in_use(port))
+        finally:
+            if handle.poll() is None:
+                self.runner.stop_server(handle)
 
     def test_wrong_served_name_never_counts_as_ready(self):
         port = free_port()

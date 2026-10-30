@@ -29,17 +29,24 @@ skipped or incomplete outputs, and symlinks are not served.
 
 | Piece | State |
 |---|---|
-| UI, upload validation, orchestration, process lifecycle | Unit/integration tested on CPU (50 tests) |
-| Real vLLM + PaddleOCR adapter | Wired to the existing scripts, **not GPU-tested** |
-| BF16 + W8A16 + W4A16 sequentially on an RTX 4070 Laptop 8 GB | **Unverified**. Settings are starting guesses |
-| Layout (PP-DocLayoutV3) on CPU while vLLM uses the GPU | Default; **unverified** |
-| Layout + VLM on the same GPU (`layout_device: "gpu:0"`) | Not validated (README_SOURCE says the same) |
+| UI, upload validation, orchestration, process lifecycle | 51 CPU tests pass; the real localhost browser upload and sequential run completed |
+| Real vLLM + PaddleOCR adapter | All three completed on a synthetic smoke page on the RTX 4070 Laptop 8 GB GPU |
+| BF16 → W8A16 → W4A16 sequentially | Verified for that page at 0.72 GPU-memory utilization, 8192 max model length and one sequence; see `../evidence/laptop_smoke_20261030/` |
+| Layout (PP-DocLayoutV3) on CPU while vLLM uses the GPU | Verified for that page; layout time is included in page-parse wall time, not isolated |
+| Layout + VLM on the same GPU (`layout_device: "gpu:0"`) | Not validated; CPU layout is the tested configuration |
 | PDF input | Passed straight to PaddleOCR; `parse_one_image` refuses anything but exactly one page prediction. **Unverified** |
+
+The synthetic page is **not** a benchmark, accuracy test, examiner-selected page, or proof that
+all image/PDF layouts will work. The 7-minute browser recording in the local evidence folder
+shows the real laptop run; the actual Markdown/JSON and timings are saved separately.
 
 ## Host setup (nothing is installed by this package)
 
-1. Use the two existing Python 3.12 environments from `config/environment_versions.json`
-   (vLLM server env; PaddleOCR client env). The UI itself needs only the standard library.
+1. Use separate Python 3.12 vLLM and PaddleOCR environments. The original study's
+   `config/environment_versions.json` is **not** the laptop environment; actual installed
+   versions and settings are in the local evidence folder's `laptop_environment.json`.
+   PaddleX needs its `genai-client` extra for the vLLM-server client path. The UI itself
+   needs only the standard library.
 2. Verify each checkpoint once (the launcher repeats this at every start):
    `python scripts/verify_checkpoints.py --manifest config/checkpoint_hashes.json --variant BF16 --checkpoint /path/BF16`
    (repeat for W8A16 and W4A16).
@@ -49,16 +56,14 @@ skipped or incomplete outputs, and symlinks are not served.
 
 ## Host GPU acceptance checklist (do this before presenting)
 
-- [ ] `/api/status` shows 0 problems.
-- [ ] BF16 alone: server reaches ready at `gpu_memory_utilization` 0.70 without OOM
-      (check `runs/<id>/logs/BF16.server.log`). If OOM or too little KV cache: lower `max_model_len`
-      or raise utilization, staying under the VRAM the display leaves free.
-- [ ] All three variants complete with `layout_device: "cpu"`. Record CPU layout time separately.
-- [ ] Peak device memory (shown when `nvidia-smi` is present; includes other processes) stays under 8 GB.
-- [ ] Markdown for each variant matches the page by eye. Similarity % is a text diff against BF16, not accuracy.
-- [ ] Quantized variants use `--linear-backend marlin`, which serve_model.py picks automatically from
-      `quantization_config`. Confirm Marlin works on the 4070 (Ada, sm_89) in that vLLM build.
-- [ ] Only once these pass should the presentation say that local inference works on this laptop.
+- [x] `/api/status` showed 0 problems and browser upload started the run.
+- [x] All three variants completed on the synthetic page with `layout_device: "cpu"`,
+      `gpu_memory_utilization: 0.72`, `max_model_len: 8192`, one sequence, and warmup enabled.
+- [x] Peak device memory was 5596/5602/5614 MiB (BF16/W8/W4) of 8188 MiB.
+- [x] Outputs recovered the synthetic page text and table; similarity to BF16 was 100%
+      **for this one synthetic page only**, not an accuracy score.
+- [x] Both quantized servers logged `MarlinLinearKernel` on the 4070 (Ada, sm_89).
+- [ ] Validate the actual examiner-selected page live; arbitrary inputs and PDF parsing are unverified.
 
 Latency semantics: "measured" = wall time of one warm `parse_one_image` call (layout + all VLM
 region requests + Markdown/JSON save), c=1, this page, this machine. It is not the paper's L4
@@ -66,4 +71,4 @@ throughput and must not be compared with it as a replication.
 
 ## Tests
 
-`cd demo && PYTHONPATH=. python -m unittest discover -s tests -v` (stdlib only, no GPU, no network).
+`cd demo && PYTHONPATH=. python -m unittest discover -s tests -v` (51 CPU tests; no GPU or network).

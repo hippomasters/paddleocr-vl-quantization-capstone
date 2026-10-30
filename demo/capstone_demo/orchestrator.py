@@ -220,8 +220,14 @@ class SubprocessRunner:
             with self._lock:
                 self._processes.discard(process)
 
-    def stop_server(self, handle):
+    def stop_server(self, handle, port=None):
         self._kill(handle, 60)
+        if port is not None:
+            deadline = time.monotonic() + 120
+            while self.port_in_use(port):
+                if time.monotonic() >= deadline:
+                    raise RuntimeError(f"server port {port} remained occupied after shutdown")
+                time.sleep(0.2)
 
     def terminate_all(self):
         with self._lock:
@@ -355,7 +361,7 @@ class Orchestrator:
             entry["status"] = "done"
         finally:
             if handle is not None:
-                self.runner.stop_server(handle)
+                self.runner.stop_server(handle, port=c.vllm_port)
             if sampler:
                 entry["gpu_memory"] = sampler.stop()
 

@@ -63,6 +63,7 @@ class FakeRunner:
 
     def __init__(self, fail_ready=(), fail_client=(), skip_outputs=()):
         self.events = []
+        self.stopped_ports = []
         self.fail_ready = set(fail_ready)
         self.fail_client = set(fail_client)
         self.skip_outputs = set(skip_outputs)
@@ -112,8 +113,9 @@ class FakeRunner:
         )
         return 0
 
-    def stop_server(self, handle):
+    def stop_server(self, handle, port=None):
         self.events.append(("stop", handle))
+        self.stopped_ports.append(port)
         self.active = None
 
     def terminate_all(self):

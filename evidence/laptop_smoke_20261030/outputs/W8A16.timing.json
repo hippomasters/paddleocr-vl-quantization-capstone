@@ -1,0 +1,23 @@
+{
+  "variant": "W8A16",
+  "served_model_name": "GPTQ_W8A16_G128",
+  "layout_device": "cpu",
+  "concurrency": 1,
+  "pipeline_init_s": 2.482425531001354,
+  "passes": [
+    {
+      "kind": "warmup",
+      "seconds": 24.384840394001003
+    },
+    {
+      "kind": "measured",
+      "seconds": 9.561298806000195
+    }
+  ],
+  "measured_parse_s": 9.561298806000195,
+  "scope": "parse_one_image wall time: layout + VLM requests + Markdown/JSON save",
+  "outputs": {
+    "markdown": "/home/Master/Documents/Hermes/capstone-evidence/laptop-runs/575bb4ee8ee3bb1333d9452220724a45/W8A16/page.md",
+    "json": "/home/Master/Documents/Hermes/capstone-evidence/laptop-runs/575bb4ee8ee3bb1333d9452220724a45/W8A16/page.json"
+  }
+}

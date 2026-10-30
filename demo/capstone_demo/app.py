@@ -40,10 +40,10 @@ SECURITY_HEADERS = {
     "Cache-Control": "no-store",
 }
 ADAPTER_NOTE = (
-    "Real adapter: source/scripts/serve_model.py (hash-verifies all model files and "
-    "custom code before trust_remote_code) + parse_page.py pipeline. The demo package "
-    "is not GPU-tested; single-GPU layout+VLM is not validated. Results shown are only "
-    "what this host actually produced."
+    "Real adapter: scripts/serve_model.py (hash-verifies model files and custom code) "
+    "+ scripts/parse_page.py. This build was synthetic page GPU-tested on an RTX 4070 "
+    "Laptop with CPU layout and sequential BF16/W8A16/W4A16; arbitrary pages and PDFs "
+    "remain unverified. Results shown are only what this host actually produced."
 )
 
 

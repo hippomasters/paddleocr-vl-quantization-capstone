@@ -165,13 +165,14 @@ class AppTests(unittest.TestCase):
         response, _ = self.request("GET", f"/api/runs/{run_id}/outputs/W8A16/markdown")
         self.assertEqual(response.status, 404)
 
-    def test_status_reports_readiness_and_unverified_gpu_adapter(self):
+    def test_status_reports_readiness_and_limited_laptop_gpu_validation(self):
         response, body = self.request("GET", "/api/status")
         status = json.loads(body)
         self.assertEqual(status["problems"], [])
         self.assertFalse(status["busy"])
         self.assertEqual(status["variant_problems"], {"BF16": [], "W8A16": [], "W4A16": []})
-        self.assertIn("not GPU-tested", status["adapter_note"])
+        self.assertIn("synthetic page GPU-tested", status["adapter_note"])
+        self.assertIn("arbitrary pages and PDFs remain unverified", status["adapter_note"])
 
     def test_not_ready_host_refuses_runs_instead_of_faking(self):
         Path(self.config.models["BF16"], "model.safetensors").unlink()
