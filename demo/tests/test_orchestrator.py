@@ -108,6 +108,43 @@ class OrchestratorTests(unittest.TestCase):
         self.assertIsInstance(w8["similarity_to_bf16"], float)
         self.assertEqual(self.store.read_result(self.run.run_id), result)
 
+    def test_selected_subset_runs_only_selected_models_in_canonical_order(self):
+        runner = FakeRunner()
+        result = Orchestrator(self.config, self.store, runner=runner, gpu_sampler=None).run(
+            self.run, ("W4A16", "W8A16")
+        )
+        self.assertEqual([v["variant"] for v in result["variants"]], ["BF16", "W8A16", "W4A16"])
+        self.assertEqual([v["status"] for v in result["variants"]], ["skipped", "done", "done"])
+        self.assertEqual(runner.events, [
+            (action, variant)
+            for variant in ("W8A16", "W4A16")
+            for action in ("start", "ready", "client", "stop")
+        ])
+        self.assertIsNone(result["variants"][1]["similarity_to_bf16"])
+        self.assertEqual(result["status"], "done")
+
+    def test_full_real_markdown_and_structured_json_are_available(self):
+        runner = FakeRunner()
+        original = runner.run_client
+        large_text = "# <img src=x onerror=alert(1)>\n" + "X" * (256 * 1024 + 1)
+        payload = {"parsing_res_list": [{"text": "<script>alert(1)</script>"}], "nested": {"value": [1, 2]}}
+
+        def write_full_outputs(command, *args):
+            code = original(command, *args)
+            if command[command.index("--variant-label") + 1] == "W8A16":
+                out = Path(command[command.index("--output-dir") + 1])
+                (out / "page.md").write_text(large_text)
+                (out / "page.json").write_text(json.dumps(payload))
+            return code
+
+        runner.run_client = write_full_outputs
+        result = Orchestrator(self.config, self.store, runner=runner, gpu_sampler=None).run(self.run, ("W8A16",))
+        entry = result["variants"][1]
+        self.assertEqual(entry["markdown"], large_text)
+        self.assertFalse(entry["markdown_truncated"])
+        self.assertEqual(entry["structured_json"], payload)
+        self.assertEqual(entry["json_regions"], 1)
+
     def test_failed_server_is_stopped_and_next_variant_still_runs(self):
         runner = FakeRunner(fail_ready={"W8A16"})
         result = self.orchestrate(runner)

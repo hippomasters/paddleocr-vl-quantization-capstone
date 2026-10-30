@@ -56,6 +56,27 @@ class RunStore:
                 return path
         return None
 
+    def output_file(self, run_id, variant, kind):
+        """Return only completed parser files under this run, never caller paths."""
+        from .config import VARIANT_ORDER
+
+        if variant not in VARIANT_ORDER or kind not in ("markdown", "json"):
+            return None
+        directory = self._dir(run_id)
+        result = self.read_result(run_id)
+        if not result or result.get("run_id") != run_id:
+            return None
+        entry = next((v for v in result.get("variants", []) if v.get("variant") == variant), None)
+        extension = ".md" if kind == "markdown" else ".json"
+        relative = f"{variant}/page{extension}"
+        if not entry or entry.get("status") != "done" or entry.get("outputs", {}).get(kind) != relative:
+            return None
+        subdir = directory / variant
+        path = subdir / f"page{extension}"
+        if any(item.is_symlink() for item in (directory, subdir, path)) or not path.is_file():
+            return None
+        return path
+
     def write_result(self, run_id, result: dict):
         path = self._dir(run_id) / "result.json"
         temporary = path.with_suffix(".json.tmp")

@@ -10,7 +10,7 @@ Code and compact, checkable evidence for the BF16, GPTQ-W8A16-G128 and GPTQ-W4A1
 - `evidence/performance_recomputed.json`: six full-run rows recomputed from archived page records.
 - `evidence/smoke/`: one-page synthetic functional GPU smoke evidence for each low-bit model, plus Marlin-selection log excerpt. Smoke is not an accuracy or performance benchmark.
 - `evidence/full_run_archive_hashes.json`: SHA-256/size for the three complete local full-run ZIPs. Large archives are deliberately not in GitHub.
-- `demo/`: localhost-only sequential three-variant UI and 42 CPU-tested orchestration/validation tests. See `demo/README_DEMO.md`. Its real laptop GPU inference and video are pending and must not be inferred from the CPU tests.
+- `demo/`: localhost-only selectable, sequential three-variant UI and 50 CPU-tested orchestration/validation tests. See `demo/README_DEMO.md`. Its real laptop GPU inference and video are pending and must not be inferred from the CPU tests.
 - `docs/REPRODUCTION.md`: exact scope, notebook order, CLI commands and known reproduction limits.
 
 The experiment used all 1,651 OmniDocBench v1.6 pages per variant at one and 24 within-page concurrent region requests, under the original four-L4 notebook topology. Throughput runs occurred on different machines, so a one-GPU laptop demonstration is **not** a benchmark replication.
@@ -21,4 +21,4 @@ See `models/README.md`. The upstream PaddleOCR-VL-1.6 model and redistributed GP
 
 ## Tests
 
-Run `PYTHONPATH=scripts python -m unittest discover -s tests -v` for portable unit tests. This does not run GPU inference or the official evaluator. The full raw records, third-party inputs and private weights are kept in a separate local evidence folder and model repositories. The local folder is `/home/Master/Documents/Hermes/capstone-evidence`; three copied raw archives were hash-checked against their source manifests. The folder and its eventual video are not tracked by Git. Run `cd demo && PYTHONPATH=. python -m unittest discover -s tests -q` for its 42 device-free tests.
+Run `PYTHONPATH=scripts python -m unittest discover -s tests -v` for portable unit tests. This does not run GPU inference or the official evaluator. The full raw records, third-party inputs and private weights are kept in a separate local evidence folder and model repositories. The local folder is `/home/Master/Documents/Hermes/capstone-evidence`; three copied raw archives were hash-checked against their source manifests. The folder and its eventual video are not tracked by Git. Run `cd demo && PYTHONPATH=. python -m unittest discover -s tests -q` for its 50 device-free tests.

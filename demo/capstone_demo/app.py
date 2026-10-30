@@ -27,6 +27,7 @@ STATIC = {
     "/style.css": ("style.css", "text/css; charset=utf-8"),
 }
 RUN_PATH = re.compile(r"/api/runs/([0-9a-f]{32})(/input)?")
+OUTPUT_PATH = re.compile(r"/api/runs/([0-9a-f]{32})/outputs/(BF16|W8A16|W4A16)/(markdown|json)")
 SECURITY_HEADERS = {
     "Content-Security-Policy": (
         "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob:; "
@@ -107,12 +108,23 @@ class Handler(BaseHTTPRequestHandler):
                     "busy": self.server.job_lock.locked(),
                     "adapter_note": ADAPTER_NOTE,
                     "variants": list(config.variant_order),
+                    "variant_problems": {v: readiness(config, (v,)) for v in config.variant_order},
                     "layout_device": config.layout_device,
                     "max_upload_bytes": config.max_upload_bytes,
                 },
             )
         if path == "/api/runs":
             return self._json(HTTPStatus.OK, {"runs": store.list_results()})
+        output_match = OUTPUT_PATH.fullmatch(path)
+        if output_match:
+            run_id, variant, kind = output_match.groups()
+            source = store.output_file(run_id, variant, kind)
+            if source is None:
+                return self._error(HTTPStatus.NOT_FOUND, "Not found")
+            content_type = "text/plain; charset=utf-8" if kind == "markdown" else "application/json"
+            filename = f"{variant}-page.{ 'md' if kind == 'markdown' else 'json' }"
+            return self._send(HTTPStatus.OK, source.read_bytes(), content_type,
+                              {"Content-Disposition": f'attachment; filename="{filename}"'})
         match = RUN_PATH.fullmatch(path)
         if not match or not store.exists(match.group(1)):
             return self._error(HTTPStatus.NOT_FOUND, "Not found")
@@ -137,6 +149,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._error(HTTPStatus.FORBIDDEN, "Cross-origin or unmarked request refused")
         if urlsplit(self.path).path != "/api/runs":
             return self._error(HTTPStatus.NOT_FOUND, "Not found")
+        selected_header = self.headers.get("X-Capstone-Variants")
+        selected = selected_header.split(",") if selected_header is not None else []
+        if not selected or len(set(selected)) != len(selected) or not set(selected) <= set(self.server.config.variant_order):
+            return self._error(HTTPStatus.BAD_REQUEST, "Select one or more distinct known models")
         if self.headers.get("Transfer-Encoding"):
             return self._error(HTTPStatus.LENGTH_REQUIRED, "Chunked uploads not accepted")
         try:
@@ -153,7 +169,7 @@ class Handler(BaseHTTPRequestHandler):
             info = validate_upload(data, max_bytes=config.max_upload_bytes)
         except UploadError as exc:
             return self._error(HTTPStatus.UNSUPPORTED_MEDIA_TYPE, str(exc))
-        problems = readiness(config)
+        problems = readiness(config, selected)
         if problems:
             return self._error(HTTPStatus.SERVICE_UNAVAILABLE, "Host not ready: " + "; ".join(problems))
         if not self.server.job_lock.acquire(blocking=False):
@@ -166,7 +182,7 @@ class Handler(BaseHTTPRequestHandler):
 
         def job():
             try:
-                self.server.orchestrator.run(run)
+                self.server.orchestrator.run(run, selected)
             finally:
                 self.server.job_lock.release()
 

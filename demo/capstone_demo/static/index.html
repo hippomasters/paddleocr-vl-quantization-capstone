@@ -10,7 +10,7 @@
 <header>
   <div>
     <h1>PaddleOCR-VL-1.6 on one 8 GB GPU</h1>
-    <p class="sub">BF16 → GPTQ W8A16 → GPTQ W4A16, run one after another on the same page</p>
+    <p class="sub">Choose one, two or all three; selected models run sequentially on the same page</p>
   </div>
   <div id="host-status" class="pill">Checking host…</div>
 </header>
@@ -21,7 +21,13 @@
       <input id="file" type="file" accept="image/png,image/jpeg,application/pdf">
       <span id="file-label">Choose a page (PNG, JPEG or single-page PDF)</span>
     </label>
-    <button id="run" type="button" disabled>Run all three</button>
+    <fieldset id="models" class="models">
+      <legend>Models to run</legend>
+      <label><input type="checkbox" name="variant" value="BF16" checked> BF16</label>
+      <label><input type="checkbox" name="variant" value="W8A16" checked> GPTQ W8A16</label>
+      <label><input type="checkbox" name="variant" value="W4A16" checked> GPTQ W4A16</label>
+    </fieldset>
+    <button id="run" type="button" disabled>Run selected</button>
     <select id="history" aria-label="Load a stored run"><option value="">Stored runs…</option></select>
     <p id="message" class="message" role="status"></p>
   </section>

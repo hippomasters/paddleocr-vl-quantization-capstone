@@ -1,7 +1,7 @@
 # Localhost demo: BF16 vs GPTQ W8A16 vs GPTQ W4A16 on one page
 
 Browser UI (http://127.0.0.1 only) that takes one page (PNG/JPEG, or a single-page PDF),
-then for **BF16 → W8A16 → W4A16, strictly one after another** on one GPU:
+then for the explicitly selected subset of **BF16 → W8A16 → W4A16, strictly one after another** on one GPU:
 
 1. starts `scripts/serve_model.py` (which re-hashes **all** manifest files, including
    the custom `*.py` model code, before `--trust-remote-code`; unlisted executables are refused),
@@ -16,12 +16,20 @@ then for **BF16 → W8A16 → W4A16, strictly one after another** on one GPU:
 Each run is stored in `demo/runs/<run_id>/`: the input page, `result.json`, each variant's real
 Markdown/JSON output, `<variant>.timing.json`, and server/client logs. Failures are shown with
 log tails. **No output is ever synthesized**; test doubles exist only under `demo/tests/`.
+Select one, two, or all three models in the browser. Unselected models appear as skipped; the
+run still uses the fixed order for selected models. BF16-relative speedup and similarity are
+shown only when BF16 has a successful result. The UI displays full Markdown and structured
+JSON as plain text, never rendered HTML, and offers attachment downloads for completed models.
+The POST `/api/runs` API takes the image bytes as before, plus the required
+`X-Capstone-Variants: BF16,W8A16,W4A16` header (any nonempty distinct subset is accepted).
+Downloads use only `/api/runs/<run_id>/outputs/<variant>/markdown|json`; arbitrary paths,
+skipped or incomplete outputs, and symlinks are not served.
 
 ## Status
 
 | Piece | State |
 |---|---|
-| UI, upload validation, orchestration, process lifecycle | Unit/integration tested on CPU (42 tests) |
+| UI, upload validation, orchestration, process lifecycle | Unit/integration tested on CPU (50 tests) |
 | Real vLLM + PaddleOCR adapter | Wired to the existing scripts, **not GPU-tested** |
 | BF16 + W8A16 + W4A16 sequentially on an RTX 4070 Laptop 8 GB | **Unverified**. Settings are starting guesses |
 | Layout (PP-DocLayoutV3) on CPU while vLLM uses the GPU | Default; **unverified** |

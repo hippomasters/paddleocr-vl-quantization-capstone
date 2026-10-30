@@ -26,7 +26,6 @@ if str(SOURCE_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SOURCE_SCRIPTS))
 from benchmark_driver import VARIANTS  # noqa: E402
 
-MARKDOWN_DISPLAY_LIMIT = 256 * 1024
 SIMILARITY_LIMIT = 20000
 PROXY_KEYS = ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy")
 OFFLINE_ENV = {
@@ -263,7 +262,7 @@ class Orchestrator:
         self._abort.set()
         self.runner.terminate_all()
 
-    def _initial(self, run):
+    def _initial(self, run, selected):
         info = run.info
         c = self.config
         return {
@@ -286,10 +285,11 @@ class Orchestrator:
             },
             "variants": [
                 {
-                    "variant": v, "served_name": served_name(v), "status": "pending",
+                    "variant": v, "served_name": served_name(v),
+                    "status": "pending" if v in selected else "skipped",
                     "error": None, "error_log_tail": None, "timings": {},
                     "gpu_memory": None, "markdown": None, "markdown_truncated": False,
-                    "json_regions": None, "similarity_to_bf16": None,
+                    "structured_json": None, "json_regions": None, "similarity_to_bf16": None,
                 }
                 for v in c.variant_order
             ],
@@ -311,9 +311,9 @@ class Orchestrator:
             measured_parse_s=timing.get("measured_parse_s"),
         )
         text = markdown.read_text(encoding="utf-8", errors="replace")
-        entry["markdown"] = text[:MARKDOWN_DISPLAY_LIMIT]
-        entry["markdown_truncated"] = len(text) > MARKDOWN_DISPLAY_LIMIT
-        regions = json.loads(structured.read_text(encoding="utf-8")).get("parsing_res_list")
+        entry["markdown"] = text
+        entry["structured_json"] = json.loads(structured.read_text(encoding="utf-8"))
+        regions = entry["structured_json"].get("parsing_res_list")
         entry["json_regions"] = len(regions) if isinstance(regions, list) else None
         entry["outputs"] = {"markdown": str(markdown.relative_to(run.directory)), "json": str(structured.relative_to(run.directory))}
 
@@ -359,10 +359,15 @@ class Orchestrator:
             if sampler:
                 entry["gpu_memory"] = sampler.stop()
 
-    def run(self, run):
-        result = self._initial(run)
+    def run(self, run, selected=None):
+        selected = set(self.config.variant_order if selected is None else selected)
+        if not selected or not selected <= set(self.config.variant_order):
+            raise ValueError("Select at least one known model")
+        result = self._initial(run, selected)
         self.store.write_result(run.run_id, result)
         for entry in result["variants"]:
+            if entry["variant"] not in selected:
+                continue
             if self._abort.is_set():
                 entry["status"] = "skipped"
                 continue
@@ -382,7 +387,7 @@ class Orchestrator:
             if reference is not None and entry["markdown"] is not None:
                 matcher = difflib.SequenceMatcher(None, reference[:SIMILARITY_LIMIT], entry["markdown"][:SIMILARITY_LIMIT])
                 entry["similarity_to_bf16"] = round(matcher.ratio(), 4)
-        statuses = {e["status"] for e in result["variants"]}
+        statuses = {e["status"] for e in result["variants"] if e["variant"] in selected}
         if self._abort.is_set():
             result["status"] = "aborted"
         elif statuses == {"done"}:

@@ -67,6 +67,14 @@ class ConfigTests(unittest.TestCase):
         self.assertTrue(any("W4A16" in p for p in problems), problems)
         self.assertTrue(any("inference.yml" in p for p in problems), problems)
 
+    def test_readiness_checks_only_selected_model_but_shared_layout(self):
+        config = load_config(write_config(self.root))
+        (Path(config.models["BF16"]) / "model.safetensors").unlink()
+        self.assertEqual(readiness(config, ("W4A16",)), [])
+        self.assertTrue(any("BF16" in p for p in readiness(config, ("BF16",))))
+        (Path(config.layout_dir) / "inference.yml").unlink()
+        self.assertTrue(any("inference.yml" in p for p in readiness(config, ("W4A16",))))
+
 
 if __name__ == "__main__":
     unittest.main()

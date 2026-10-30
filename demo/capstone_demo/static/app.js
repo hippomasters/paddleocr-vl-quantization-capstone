@@ -9,6 +9,16 @@ const STATUS_TEXT = {
 let selectedFile = null;
 let pollTimer = null;
 let ready = false;
+let busy = false;
+let variantProblems = {};
+
+function selectedVariants() {
+  return [...document.querySelectorAll('input[name="variant"]:checked')].map((input) => input.value);
+}
+
+function selectionProblems() {
+  return selectedVariants().flatMap((variant) => variantProblems[variant] || []);
+}
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -36,21 +46,24 @@ async function getJSON(url) {
 async function loadStatus() {
   try {
     const status = await getJSON("/api/status");
-    ready = status.problems.length === 0;
+    variantProblems = status.variant_problems || {};
+    busy = status.busy;
+    ready = selectedVariants().length > 0 && selectionProblems().length === 0;
     const pill = $("host-status");
-    pill.textContent = ready ? (status.busy ? "Host ready · run in progress" : "Host ready") : "Host not ready";
+    pill.textContent = ready ? (busy ? "Host ready · run in progress" : "Host ready") : "Selected models not ready";
     pill.className = "pill " + (ready ? "ok" : "bad");
-    pill.title = status.problems.join("\n");
+    pill.title = selectionProblems().join("\n");
     $("adapter-note").textContent = status.adapter_note;
-    if (!ready) setMessage("Not ready: " + status.problems.join("; "), true);
-    updateRunButton(status.busy);
+    if (!ready) setMessage(selectedVariants().length ? "Not ready: " + selectionProblems().join("; ") : "Select at least one model", true);
+    else if ($("message").textContent.startsWith("Not ready:") || $("message").textContent === "Select at least one model") setMessage("");
+    updateRunButton(busy);
   } catch (error) {
     setMessage("Cannot reach demo server: " + error.message, true);
   }
 }
 
 function updateRunButton(busy) {
-  $("run").disabled = !(ready && selectedFile && !busy && !pollTimer);
+  $("run").disabled = !(ready && selectedFile && selectedVariants().length && !busy && !pollTimer);
 }
 
 async function loadHistory() {
@@ -69,7 +82,8 @@ function renderBars(variants) {
   bars.replaceChildren();
   const values = variants.map((v) => v.timings && v.timings.measured_parse_s).filter((x) => typeof x === "number");
   const max = values.length ? Math.max(...values) : 1;
-  const base = variants[0] && variants[0].timings && variants[0].timings.measured_parse_s;
+  const bf16 = variants.find((v) => v.variant === "BF16" && v.status === "done");
+  const base = bf16 && bf16.timings && bf16.timings.measured_parse_s;
   for (const v of variants) {
     const t = v.timings && v.timings.measured_parse_s;
     const row = el("div", "bar-row");
@@ -92,7 +106,7 @@ function card(v) {
   const node = el("article", "card");
   const head = el("div", "card-head");
   head.appendChild(el("h3", null, LABELS[v.variant] || v.variant));
-  const statusClass = v.status === "done" ? "done" : v.status === "failed" ? "failed" : "running";
+  const statusClass = ["done", "failed", "skipped"].includes(v.status) ? v.status : "running";
   head.appendChild(el("span", "status " + statusClass, STATUS_TEXT[v.status] || v.status));
   node.appendChild(head);
   node.appendChild(el("div", "muted small", "served as " + v.served_name));
@@ -118,19 +132,36 @@ function card(v) {
     node.appendChild(el("pre", "error", v.error + (v.error_log_tail ? "\n\n--- log tail ---\n" + v.error_log_tail : "")));
   }
   if (typeof v.markdown === "string") {
-    node.appendChild(el("div", "muted small", "Parsed Markdown (raw text, not rendered)" + (v.markdown_truncated ? " · truncated" : "")));
+    node.appendChild(el("div", "muted small", "Full parsed Markdown (raw text, not rendered)"));
     node.appendChild(el("pre", null, v.markdown));
+  }
+  if (v.structured_json !== null && v.structured_json !== undefined) {
+    node.appendChild(el("div", "muted small", "Full structured JSON (raw text, not rendered)"));
+    node.appendChild(el("pre", null, JSON.stringify(v.structured_json, null, 2)));
+  }
+  if (v.status === "done" && Object.hasOwn(LABELS, v.variant) && v.outputs) {
+    const links = el("div", "downloads");
+    for (const [kind, label] of [["markdown", "Download Markdown"], ["json", "Download JSON"]]) {
+      if (!v.outputs[kind]) continue;
+      const link = el("a", null, label);
+      link.href = `/api/runs/${currentRunId}/outputs/${v.variant}/${kind}`;
+      link.download = `${v.variant}-page.${kind === "markdown" ? "md" : "json"}`;
+      links.appendChild(link);
+    }
+    node.appendChild(links);
   }
   return node;
 }
 
+let currentRunId = null;
 function render(result) {
+  currentRunId = result.run_id;
   $("summary").hidden = false;
   const s = result.settings || {};
   $("settings").textContent = result.status === "queued" ? "Queued…" :
     `Run ${result.run_id.slice(0, 8)} · ${result.status} · layout on ${s.layout_device} · ` +
     `gpu_mem_util ${s.gpu_memory_utilization} · max_num_seqs ${s.max_num_seqs} · warmup ${s.warmup ? "on" : "off"}. ` +
-    "Speedup = BF16 measured / variant measured on this page and this machine only; similarity is a text diff, not accuracy.";
+    "Speedup and similarity are shown only when BF16 ran successfully; similarity is a text diff, not accuracy.";
   renderBars(result.variants || []);
   const columns = $("columns");
   columns.replaceChildren(...(result.variants || []).map(card));
@@ -174,22 +205,25 @@ async function follow(runId) {
 $("file").addEventListener("change", (event) => {
   selectedFile = event.target.files[0] || null;
   $("file-label").textContent = selectedFile ? `${selectedFile.name} (${(selectedFile.size / 1048576).toFixed(2)} MB)` : "Choose a page";
-  updateRunButton(false);
+  updateRunButton(busy);
 });
 
+$("models").addEventListener("change", () => { loadStatus(); });
+
 $("run").addEventListener("click", async () => {
-  if (!selectedFile) return;
+  const selected = selectedVariants();
+  if (!selectedFile || !selected.length || !ready || busy) return;
   $("run").disabled = true;
   setMessage("Uploading…");
   try {
     const response = await fetch("/api/runs", {
       method: "POST",
-      headers: { "X-Capstone-Demo": "1", "Content-Type": "application/octet-stream" },
+      headers: { "X-Capstone-Demo": "1", "X-Capstone-Variants": selected.join(","), "Content-Type": "application/octet-stream" },
       body: selectedFile,
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || response.statusText);
-    setMessage("Running BF16 → W8A16 → W4A16 sequentially. Each model server is started, verified, used, and stopped in turn.");
+    setMessage(`Running ${selected.join(" → ")} sequentially. Each model server is started, verified, used, and stopped in turn.`);
     follow(data.run_id);
   } catch (error) {
     setMessage(error.message, true);

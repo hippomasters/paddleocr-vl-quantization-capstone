@@ -117,7 +117,7 @@ def load_config(path) -> DemoConfig:
     return DemoConfig(**data)
 
 
-def readiness(config: DemoConfig) -> list[str]:
+def readiness(config: DemoConfig, selected=None) -> list[str]:
     """Cheap existence checks. Hashes are verified by serve_model.py at launch."""
     problems = []
     for script in (SERVE_SCRIPT, PARSE_SCRIPT, CLIENT_SCRIPT, MANIFEST):
@@ -130,7 +130,8 @@ def readiness(config: DemoConfig) -> list[str]:
     for name in LAYOUT_FILES:
         if not (Path(config.layout_dir) / name).is_file():
             problems.append(f"Layout directory missing {name}: {config.layout_dir}")
-    for variant, directory in config.models.items():
+    for variant in (config.variant_order if selected is None else selected):
+        directory = config.models[variant]
         for name in ("config.json", "model.safetensors"):
             if not (Path(directory) / name).is_file():
                 problems.append(f"{variant} model directory missing {name}: {directory}")

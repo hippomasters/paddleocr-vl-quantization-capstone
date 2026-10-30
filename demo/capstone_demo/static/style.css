@@ -21,6 +21,11 @@ main { padding: 18px 24px; display: grid; gap: 16px; }
 #controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .drop { border: 1px dashed var(--border); border-radius: 8px; padding: 10px 14px; cursor: pointer; flex: 1 1 280px; }
 .drop input { display: none; }
+.models { border: 1px solid var(--border); border-radius: 8px; display: flex; flex-wrap: wrap; gap: 10px; padding: 6px 12px 10px; }
+.models legend { font-size: .82rem; color: var(--muted); }
+.models label { white-space: nowrap; cursor: pointer; }
+.downloads { display: flex; flex-wrap: wrap; gap: 12px; }
+.downloads a { color: var(--accent); }
 button { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 10px 18px; font-weight: 600; cursor: pointer; }
 button:disabled { opacity: .45; cursor: not-allowed; }
 select { padding: 9px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
@@ -40,7 +45,7 @@ select { padding: 9px; border-radius: 8px; border: 1px solid var(--border); back
 .card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .card-head h3 { margin: 0; font-size: 1.05rem; }
 .status { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
-.status.done { color: var(--ok); } .status.failed { color: var(--bad); } .status.running { color: var(--warn); }
+.status.done { color: var(--ok); } .status.failed { color: var(--bad); } .status.running { color: var(--warn); } .status.skipped { color: var(--muted); }
 dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0; font-size: .88rem; font-variant-numeric: tabular-nums; }
 dt { color: var(--muted); } dd { margin: 0; text-align: right; }
 pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin: 0; white-space: pre-wrap; word-break: break-word; max-height: 520px; overflow: auto; font: 12.5px/1.45 ui-monospace, "SF Mono", Consolas, monospace; }
