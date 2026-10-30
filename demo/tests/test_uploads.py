@@ -1,7 +1,8 @@
 import unittest
+from pathlib import Path
 
 from capstone_demo.uploads import UploadError, validate_upload
-from helpers import jpeg_bytes, pdf_bytes, png_bytes, png_header
+from helpers import jpeg_bytes, png_bytes, png_header
 
 
 class UploadValidationTests(unittest.TestCase):
@@ -16,8 +17,13 @@ class UploadValidationTests(unittest.TestCase):
         self.assertEqual((info.kind, info.width, info.height), ("jpeg", 5, 7))
 
     def test_pdf_is_accepted_without_dimensions(self):
-        info = validate_upload(pdf_bytes(), max_bytes=1024)
+        info = validate_upload((Path(__file__).parent / "fixtures/fixture-one.pdf").read_bytes(), max_bytes=10000)
         self.assertEqual((info.kind, info.extension), ("pdf", ".pdf"))
+
+    def test_multi_page_pdf_rejected_before_starting_gpu(self):
+        data = (Path(__file__).parent / "fixtures/fixture-two.pdf").read_bytes()
+        with self.assertRaisesRegex(UploadError, "one page"):
+            validate_upload(data, max_bytes=10000)
 
     def test_rejects_empty_and_oversize(self):
         with self.assertRaises(UploadError):

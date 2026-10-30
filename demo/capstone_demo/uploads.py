@@ -2,7 +2,9 @@
 
 from dataclasses import dataclass
 import hashlib
+import re
 import struct
+import subprocess
 
 MAX_SIDE = 10000
 MAX_PIXELS = 50_000_000
@@ -83,5 +85,20 @@ def validate_upload(data: bytes, *, max_bytes: int) -> UploadInfo:
     if data.startswith(b"%PDF-"):
         if b"%%EOF" not in data[-2048:]:
             raise UploadError("Truncated PDF (missing %%EOF)")
+        try:
+            result = subprocess.run(
+                ["pdfinfo", "-"], input=data, capture_output=True, timeout=10, check=False
+            )
+        except FileNotFoundError as exc:
+            raise UploadError("PDF support requires Poppler pdfinfo") from exc
+        except subprocess.TimeoutExpired as exc:
+            raise UploadError("PDF validation timed out") from exc
+        metadata = result.stdout.decode("utf-8", "replace")
+        pages = re.search(r"^Pages:\s*(\d+)\s*$", metadata, re.MULTILINE)
+        encrypted = re.search(r"^Encrypted:\s*no\b", metadata, re.MULTILINE)
+        if result.returncode != 0 or pages is None or encrypted is None:
+            raise UploadError("Invalid or encrypted PDF")
+        if int(pages.group(1)) != 1:
+            raise UploadError("PDF must contain exactly one page; export the page you want as an image")
         return UploadInfo("pdf", ".pdf", "application/pdf", len(data), digest)
     raise UploadError("Unsupported file type: upload a PNG, JPEG, or single-page PDF")

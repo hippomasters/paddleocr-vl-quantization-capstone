@@ -29,12 +29,12 @@ skipped or incomplete outputs, and symlinks are not served.
 
 | Piece | State |
 |---|---|
-| UI, upload validation, orchestration, process lifecycle | 51 CPU tests pass; the real localhost browser upload and sequential run completed |
+| UI, upload validation, orchestration, process lifecycle | 52 CPU tests pass; the real localhost browser upload and sequential run completed |
 | Real vLLM + PaddleOCR adapter | All three completed on a synthetic smoke page on the RTX 4070 Laptop 8 GB GPU |
 | BF16 → W8A16 → W4A16 sequentially | Verified for that page at 0.72 GPU-memory utilization, 8192 max model length and one sequence; see `../evidence/laptop_smoke_20261030/` |
 | Layout (PP-DocLayoutV3) on CPU while vLLM uses the GPU | Verified for that page; layout time is included in page-parse wall time, not isolated |
 | Layout + VLM on the same GPU (`layout_device: "gpu:0"`) | Not validated; CPU layout is the tested configuration |
-| PDF input | Passed straight to PaddleOCR; `parse_one_image` refuses anything but exactly one page prediction. **Unverified** |
+| PDF input | A one-page PDF completed all three models on the laptop. Poppler `pdfinfo` now rejects encrypted, invalid, or multi-page PDFs before starting GPU work; users must export the desired page first. Other PDFs remain unverified. |
 
 The synthetic page is **not** a benchmark, accuracy test, examiner-selected page, or proof that
 all image/PDF layouts will work. The 7-minute browser recording in the local evidence folder
@@ -45,8 +45,8 @@ shows the real laptop run; the actual Markdown/JSON and timings are saved separa
 1. Use separate Python 3.12 vLLM and PaddleOCR environments. The original study's
    `config/environment_versions.json` is **not** the laptop environment; actual installed
    versions and settings are in the local evidence folder's `laptop_environment.json`.
-   PaddleX needs its `genai-client` extra for the vLLM-server client path. The UI itself
-   needs only the standard library.
+   PaddleX needs its `genai-client` extra for the vLLM-server client path. The UI uses
+   the standard library, plus the `pdfinfo` executable from Poppler for PDF preflight.
 2. Verify each checkpoint once (the launcher repeats this at every start):
    `python scripts/verify_checkpoints.py --manifest config/checkpoint_hashes.json --variant BF16 --checkpoint /path/BF16`
    (repeat for W8A16 and W4A16).
@@ -63,7 +63,9 @@ shows the real laptop run; the actual Markdown/JSON and timings are saved separa
 - [x] Outputs recovered the synthetic page text and table; similarity to BF16 was 100%
       **for this one synthetic page only**, not an accuracy score.
 - [x] Both quantized servers logged `MarlinLinearKernel` on the 4070 (Ada, sm_89).
-- [ ] Validate the actual examiner-selected page live; arbitrary inputs and PDF parsing are unverified.
+- [x] A one-page PDF completed all three models, and a JPEG completed W4A16 on the laptop.
+- [ ] Validate the actual examiner-selected page live; unsupported formats, multi-page PDFs,
+      oversized/corrupt uploads and arbitrary document layouts are not guaranteed.
 
 Latency semantics: "measured" = wall time of one warm `parse_one_image` call (layout + all VLM
 region requests + Markdown/JSON save), c=1, this page, this machine. It is not the paper's L4
@@ -71,4 +73,4 @@ throughput and must not be compared with it as a replication.
 
 ## Tests
 
-`cd demo && PYTHONPATH=. python -m unittest discover -s tests -v` (51 CPU tests; no GPU or network).
+`cd demo && PYTHONPATH=. python -m unittest discover -s tests -v` (52 CPU tests; no GPU or network).

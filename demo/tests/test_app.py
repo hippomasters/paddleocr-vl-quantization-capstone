@@ -172,7 +172,8 @@ class AppTests(unittest.TestCase):
         self.assertFalse(status["busy"])
         self.assertEqual(status["variant_problems"], {"BF16": [], "W8A16": [], "W4A16": []})
         self.assertIn("synthetic page GPU-tested", status["adapter_note"])
-        self.assertIn("arbitrary pages and PDFs remain unverified", status["adapter_note"])
+        self.assertIn("single-page PDF exercised", status["adapter_note"])
+        self.assertIn("Arbitrary document layouts remain unverified", status["adapter_note"])
 
     def test_not_ready_host_refuses_runs_instead_of_faking(self):
         Path(self.config.models["BF16"], "model.safetensors").unlink()

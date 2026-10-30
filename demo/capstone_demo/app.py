@@ -42,8 +42,9 @@ SECURITY_HEADERS = {
 ADAPTER_NOTE = (
     "Real adapter: scripts/serve_model.py (hash-verifies model files and custom code) "
     "+ scripts/parse_page.py. This build was synthetic page GPU-tested on an RTX 4070 "
-    "Laptop with CPU layout and sequential BF16/W8A16/W4A16; arbitrary pages and PDFs "
-    "remain unverified. Results shown are only what this host actually produced."
+    "Laptop with CPU layout and sequential BF16/W8A16/W4A16; a single-page PDF exercised "
+    "all three models. Arbitrary document layouts remain unverified. Results shown are only "
+    "what this host actually produced."
 )
 
 
