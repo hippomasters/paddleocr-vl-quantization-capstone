@@ -1,0 +1,21 @@
+{
+  "vllm_python": "/ABSOLUTE/PATH/TO/vllm-env/bin/python",
+  "paddle_python": "/ABSOLUTE/PATH/TO/paddle-env/bin/python",
+  "layout_dir": "/ABSOLUTE/PATH/TO/PP-DocLayoutV3",
+  "models": {
+    "BF16": "/ABSOLUTE/PATH/TO/PaddleOCR-VL-1.6-BF16",
+    "W8A16": "/ABSOLUTE/PATH/TO/PaddleOCR-VL-1.6-GPTQ-W8A16-G128",
+    "W4A16": "/ABSOLUTE/PATH/TO/PaddleOCR-VL-1.6-GPTQ-W4A16-G128"
+  },
+  "layout_device": "cpu",
+  "vllm_port": 8000,
+  "gpu_index": 0,
+  "gpu_memory_utilization": 0.7,
+  "max_model_len": 8192,
+  "max_num_seqs": 1,
+  "max_num_batched_tokens": 8192,
+  "server_ready_timeout_s": 900,
+  "client_timeout_s": 1800,
+  "warmup": true,
+  "max_upload_mb": 20
+}

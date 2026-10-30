@@ -1,0 +1,13 @@
+{
+  "concurrency": 24,
+  "page_count": 1651,
+  "overall": 93.74095470090283,
+  "text": 96.02712687263607,
+  "tables": 91.5409505941049,
+  "formulas": 93.65478663596751,
+  "reading_order": 86.96668320137285,
+  "match_fallback_counts": {
+    "quick_match_timeout": 3,
+    "page_timeout": 0
+  }
+}

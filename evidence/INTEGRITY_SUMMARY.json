@@ -1,0 +1,41 @@
+{
+  "bytes_by_group": {
+    "c1_bf16": 109141291,
+    "c1_lowbit": 229788570,
+    "c24": 345219180,
+    "core": 143762995,
+    "models": 4805086774,
+    "raw": 1199634161,
+    "references": 18769
+  },
+  "copied_bytes": 6832651740,
+  "copied_file_count": 126539,
+  "groups": {
+    "c1_bf16": 19701,
+    "c1_lowbit": 42641,
+    "c24": 64007,
+    "core": 131,
+    "models": 54,
+    "raw": 3,
+    "references": 2
+  },
+  "hash_mismatches": [],
+  "missing": [],
+  "reference_audit": {
+    "copied_audit_files": 2,
+    "keys": 14,
+    "pdfs_downloaded_and_verified": 0,
+    "pending_paper_pdfs": 13,
+    "pending_software_snapshots": 1
+  },
+  "unique_destinations": 126539,
+  "unlisted_generated_files": [
+    "README.md",
+    "references/README.md",
+    "provenance/ARCHIVE_AND_CHECKPOINT_VALIDATION.json",
+    "provenance/INTEGRITY_SUMMARY.json",
+    "provenance/copy_curated.py",
+    "provenance/copied_files.jsonl",
+    "provenance/verify_manifest.py"
+  ]
+}

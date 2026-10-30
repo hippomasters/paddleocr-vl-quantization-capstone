@@ -1,0 +1,6 @@
+{
+  "PaddlePaddle/PaddleOCR-VL-1.6": "c5630abae1d940eafe0697512a0325494b02ab42",
+  "PaddlePaddle/PP-DocLayoutV3": "7b48a7566925fa464281f930c58eee04fe2c862a",
+  "opendatalab/OmniDocBench": "aa1ee96d106dbe53d0ae59474d75c6e6d9b53fec",
+  "pierreguillou/DocLayNet-base": "86fa5ebffa3d336210ee1eeeec349b2c7f07899b"
+}

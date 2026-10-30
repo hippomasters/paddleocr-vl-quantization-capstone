@@ -1,0 +1,20 @@
+{
+  "note": "Full raw archives remain in the separate local evidence folder and are not uploaded to GitHub.",
+  "archives": [
+    {
+      "filename": "l4_wna16_bf16_full_20260915T025701Z_results.zip",
+      "bytes": 400036236,
+      "sha256": "0291d6ea5944dea5c0ee7c762e86fb2dd4b95378497037ad7bad9763679ba88b"
+    },
+    {
+      "filename": "l4_wna16_w4a16_full_20260915T060500Z_results.zip",
+      "bytes": 399777861,
+      "sha256": "a75a3f3c83b3e437f5b7cad2640dda9d84d21f567403efef2728eea6d8fcd5a1"
+    },
+    {
+      "filename": "l4_wna16_w8a16_full_20260915T060734Z_results.zip",
+      "bytes": 399820064,
+      "sha256": "ccc3f25f2e915fa3995309c7007957c25d0bafa1d701de8fdc25c930ce0368cc"
+    }
+  ]
+}

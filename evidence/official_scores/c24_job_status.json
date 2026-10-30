@@ -1,0 +1,70 @@
+{
+  "phase": "complete",
+  "started_utc": "2026-10-13T03:22:33.272130+00:00",
+  "variants": {
+    "BF16": {
+      "state": "verified",
+      "container": "hermes-omnidoc-c24-bf16-20261013",
+      "started_utc": "2026-10-13T03:22:33.272617+00:00",
+      "container_id": "052cb490db2b043a10afe4638add30bf2c1340305324d3893f8f7375bf1f65a5",
+      "exit_code": 0,
+      "quality": {
+        "concurrency": 24,
+        "page_count": 1651,
+        "overall": 96.37532135098094,
+        "text": 96.83428719446474,
+        "tables": 94.83880974350531,
+        "formulas": 97.45286711497276,
+        "reading_order": 87.28984362010524,
+        "match_fallback_counts": {
+          "quick_match_timeout": 2,
+          "page_timeout": 0
+        }
+      },
+      "finished_utc": "2026-10-13T06:50:58.430570+00:00"
+    },
+    "W8A16": {
+      "state": "verified",
+      "container": "hermes-omnidoc-c24-w8a16-20261013",
+      "started_utc": "2026-10-13T06:50:58.514584+00:00",
+      "container_id": "246a9b629fe7d57d3097f9e3ca0fcd9a96142ccb2edd2293133a577ff3dcb09e",
+      "exit_code": 0,
+      "quality": {
+        "concurrency": 24,
+        "page_count": 1651,
+        "overall": 96.34418380849793,
+        "text": 96.74662217936132,
+        "tables": 94.86488897613916,
+        "formulas": 97.42104026999331,
+        "reading_order": 87.23139794042257,
+        "match_fallback_counts": {
+          "quick_match_timeout": 3,
+          "page_timeout": 0
+        }
+      },
+      "finished_utc": "2026-10-13T14:30:41.650235+00:00"
+    },
+    "W4A16": {
+      "state": "verified",
+      "container": "hermes-omnidoc-c24-w4a16-20261013",
+      "started_utc": "2026-10-13T14:30:41.714696+00:00",
+      "container_id": "5489509f1e2c05d3b4fcae211215a9fbeff07d2ceafc9782544ccde3a8f96ded",
+      "exit_code": 0,
+      "quality": {
+        "concurrency": 24,
+        "page_count": 1651,
+        "overall": 93.74095470090283,
+        "text": 96.02712687263607,
+        "tables": 91.5409505941049,
+        "formulas": 93.65478663596751,
+        "reading_order": 86.96668320137285,
+        "match_fallback_counts": {
+          "quick_match_timeout": 3,
+          "page_timeout": 0
+        }
+      },
+      "finished_utc": "2026-10-13T16:22:14.941515+00:00"
+    }
+  },
+  "finished_utc": "2026-10-13T16:22:15.004522+00:00"
+}

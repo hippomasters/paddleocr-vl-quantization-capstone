@@ -1,0 +1,26 @@
+# Private inputs, generated outputs and heavyweight/third-party assets
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+*.safetensors
+*.pt
+*.pth
+*.onnx
+*.gguf
+*.whl
+*.tar
+*.tar.gz
+raw_data/
+benchmarks/
+demo_inputs/
+demo_outputs/
+recordings/
+.cache/
+.tmp/
+
+# Local demo configuration, captures, and generated runs
+demo/demo_config.json
+demo/runs/
+demo/*.log

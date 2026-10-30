@@ -1,0 +1,77 @@
+{
+  "expected_pages": 1651,
+  "variants": {
+    "BF16": {
+      "c1": {
+        "page_count": 1651,
+        "completed_pages": 1651,
+        "mean_page_seconds": 6.389702341517853,
+        "p95_page_seconds": 20.315412857499723,
+        "pages_per_hour": 563.4065262490509,
+        "vlm_tokens_per_second": 178.65751769930725,
+        "generated_tokens": 1705504,
+        "token_limit_pages": 12,
+        "paired_speedup_vs_bf16": 1.0
+      },
+      "c24": {
+        "page_count": 1651,
+        "completed_pages": 1651,
+        "mean_page_seconds": 2.4869729266323226,
+        "p95_page_seconds": 5.562147285000719,
+        "pages_per_hour": 1447.5428990193543,
+        "vlm_tokens_per_second": 537.9091127300924,
+        "generated_tokens": 1690679,
+        "token_limit_pages": 10,
+        "paired_speedup_vs_bf16": 1.0
+      }
+    },
+    "W8A16": {
+      "c1": {
+        "page_count": 1651,
+        "completed_pages": 1651,
+        "mean_page_seconds": 5.582196163833407,
+        "p95_page_seconds": 17.402434414000254,
+        "pages_per_hour": 644.9074690932765,
+        "vlm_tokens_per_second": 204.75339006005572,
+        "generated_tokens": 1682995,
+        "token_limit_pages": 9,
+        "paired_speedup_vs_bf16": 1.1091906688958022
+      },
+      "c24": {
+        "page_count": 1651,
+        "completed_pages": 1651,
+        "mean_page_seconds": 2.3109087636086993,
+        "p95_page_seconds": 5.220773013998951,
+        "pages_per_hour": 1557.8287021501724,
+        "vlm_tokens_per_second": 589.9099065095819,
+        "generated_tokens": 1683099,
+        "token_limit_pages": 9,
+        "paired_speedup_vs_bf16": 1.0500140592935208
+      }
+    },
+    "W4A16": {
+      "c1": {
+        "page_count": 1651,
+        "completed_pages": 1651,
+        "mean_page_seconds": 5.34028611061053,
+        "p95_page_seconds": 15.946192784500454,
+        "pages_per_hour": 674.1211847895596,
+        "vlm_tokens_per_second": 230.79893338464646,
+        "generated_tokens": 1802578,
+        "token_limit_pages": 35,
+        "paired_speedup_vs_bf16": 1.162454857950931
+      },
+      "c24": {
+        "page_count": 1651,
+        "completed_pages": 1651,
+        "mean_page_seconds": 2.3340965493113477,
+        "p95_page_seconds": 5.255540301999645,
+        "pages_per_hour": 1542.3526507770832,
+        "vlm_tokens_per_second": 629.0586596893653,
+        "generated_tokens": 1817778,
+        "token_limit_pages": 39,
+        "paired_speedup_vs_bf16": 1.0715296702836021
+      }
+    }
+  }
+}

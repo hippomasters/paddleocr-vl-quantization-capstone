@@ -1,0 +1,20 @@
+{
+  "01_build_bundle.ipynb": {
+    "original": "01-dependency-fixed-v6-no-resolver-conflict.ipynb",
+    "source_sha256": "5de24017e6f7624ef7bdd3f1cdf6db193800d52c63e8764b9c5c14fc541a728f",
+    "code_cells": 7,
+    "bytes": 66565
+  },
+  "02_quantize_checkpoints.ipynb": {
+    "original": "checkpoint1.ipynb",
+    "source_sha256": "20f91e6441c548e001acaa604959627886db252d332276a0923fbbee28e530cd",
+    "code_cells": 21,
+    "bytes": 122281
+  },
+  "03_full_benchmark.ipynb": {
+    "original": "l4_kaggle.ipynb",
+    "source_sha256": "efe6cb3933d03e8c985c6a1520c2b157a8f566f61b70c85c6c55a68a52c7f871",
+    "code_cells": 11,
+    "bytes": 92562
+  }
+}
