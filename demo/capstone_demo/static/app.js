@@ -174,6 +174,7 @@ function card(v) {
 let currentRunId = null;
 function render(result) {
   currentRunId = result.run_id;
+  if (!selectedFile) $("file-label").textContent = "Upload another page";
   clearSelectedPreview();
   $("empty").hidden = true;
   $("results-heading").hidden = false;
