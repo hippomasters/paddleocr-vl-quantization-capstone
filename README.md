@@ -1,6 +1,6 @@
 # PaddleOCR-VL-1.6 weight-only GPTQ capstone
 
-Code and compact, checkable evidence for the BF16, GPTQ-W8A16-G128 and GPTQ-W4A16-G128 document-parsing study. This is a **private staging repository**; it does not contain the submitted paper, black book, model weights, third-party images, or offline dependency wheelhouses. The submitted documents are not assumed to be the older local drafts.
+Code and compact, checkable evidence for the BF16, GPTQ-W8A16-G128 and GPTQ-W4A16-G128 document-parsing study. This repository contains **code and evidence only**; it does not contain the submitted paper, black book, model weights, third-party images, or offline dependency wheelhouses. The two GPTQ Hugging Face model repositories remain **private** and are not made public by this GitHub repository's visibility. The submitted documents are not assumed to be older local drafts.
 
 ## What is here
 
@@ -19,7 +19,7 @@ The experiment used all 1,651 OmniDocBench v1.6 pages per variant at one and 24 
 
 ## Models and license boundary
 
-See `models/README.md`. The upstream PaddleOCR-VL-1.6 model and redistributed GPTQ checkpoints carry the upstream Apache-2.0 license. **This repository's original code has not yet been assigned an open-source license.** Do not infer that third-party benchmark/calibration data may be redistributed from its absence here. Before changing this repository or the HF models to public, confirm code licensing, data rights, and a clean model download-to-inference test.
+See `models/README.md`. The upstream PaddleOCR-VL-1.6 model and separately hosted GPTQ checkpoints carry the upstream Apache-2.0 license. **This repository's original reproduction/demo code has not been assigned an open-source license; public visibility does not grant reuse rights.** The two model repositories remain private. Third-party benchmark/calibration data and offline package bundles are excluded; do not infer redistribution rights for them.
 
 ## Tests
 
