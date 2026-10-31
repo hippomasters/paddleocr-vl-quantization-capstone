@@ -1,0 +1,16 @@
+PaddleOCR-VL-1.6 weight-only GPTQ capstone
+Copyright 2026 Capstone project contributors
+
+The original scripts, demo application, tests and source notebooks in this
+repository are licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This project studies PaddlePaddle's PaddleOCR-VL-1.6 model. The upstream model
+and its custom model code are separately licensed under Apache-2.0 by their
+respective authors. Model weights, PP-DocLayoutV3, OmniDocBench images,
+DocLayNet calibration images and offline dependency bundles are not included
+in this GitHub code repository. The derived GPTQ model repositories carry
+their own preserved upstream LICENSE and modification notices.
+
+Saved scores, generated synthetic inputs and laptop recordings are provided
+as project evidence; they do not confer rights to third-party datasets or
+tools named in the documentation.
