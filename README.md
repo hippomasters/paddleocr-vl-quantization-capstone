@@ -12,6 +12,7 @@ Code and compact, checkable evidence for the BF16, GPTQ-W8A16-G128 and GPTQ-W4A1
 - `evidence/full_run_archive_hashes.json`: SHA-256/size for the three complete local full-run ZIPs. Large archives are deliberately not in GitHub.
 - `evidence/laptop_smoke_20261030/`: real RTX 4070 Laptop sequential BF16/W8A16/W4A16 output, timings, device-memory readback and full browser recording on one clearly labeled synthetic page. This is not a benchmark, accuracy result or examiner-page claim.
 - `evidence/presentation_demo_20261030/`: **48-second PPT-themed captioned edit** of a new, real three-model laptop run. Long unchanged loading waits are shortened; source frames and logs remain local. The input is a labeled synthetic page, not an examiner page.
+- `evidence/public_model_release_20261031.json`: anonymous Hub readback of both public GPTQ releases, Apache-2.0 LICENSE/NOTICE hashes, exact revisions and weight-object SHA-256.
 - `demo/`: localhost-only selectable, sequential three-variant UI with a new-page preview and clear unsupported-file recovery. PNG/JPEG and one-page PDF are supported; other file types and multi-page PDFs are rejected before GPU work. A one-page PDF and JPEG were exercised locally, but arbitrary examiner pages remain unverified. See `demo/README_DEMO.md`.
 - `docs/REPRODUCTION.md`: exact scope, notebook order, CLI commands and known reproduction limits.
 
@@ -19,7 +20,9 @@ The experiment used all 1,651 OmniDocBench v1.6 pages per variant at one and 24 
 
 ## Models and license boundary
 
-See `models/README.md`. The original reproduction/demo code and source notebooks in this repository are licensed under **Apache License 2.0** (`LICENSE` and `NOTICE`); the upstream PaddleOCR-VL-1.6 model and separately hosted GPTQ checkpoints also carry Apache-2.0 with their own attribution. Third-party benchmark/calibration data and offline package bundles are excluded; this license does **not** grant rights to those datasets or tools.
+The public GPTQ model releases are [W8A16](https://huggingface.co/adityatrha/PaddleOCR-VL-1.6-GPTQ-W8A16-G128) and [W4A16](https://huggingface.co/adityatrha/PaddleOCR-VL-1.6-GPTQ-W4A16-G128). Their model cards describe the weight-only modification, base revision, calibration, limitations and reproducible use. See `models/README.md` and `evidence/public_model_release_20261031.json` for exact identities.
+
+The original reproduction/demo code and source notebooks in this repository are licensed under **Apache License 2.0** (`LICENSE` and `NOTICE`); the upstream PaddleOCR-VL-1.6 model and separately hosted GPTQ checkpoints also carry Apache-2.0 with their own attribution. Third-party benchmark/calibration data and offline package bundles are excluded; this license does **not** grant rights to those datasets or tools.
 
 ## Tests
 

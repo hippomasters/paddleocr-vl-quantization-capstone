@@ -22,7 +22,7 @@ independently for GitHub code and Hugging Face models.
 
 ## Laptop validation update (October 30, 2026)
 
-- Fresh private Hugging Face snapshots for W8A16 and W4A16 were downloaded to the laptop. Each of the 14 contracted files (including weights and executable model code) passed `scripts/verify_checkpoints.py` against `config/checkpoint_hashes.json`. The updated model-card commits are W8A16 `7ef1ca9dc23790d5f946aeac956dd8b9410c474b` and W4A16 `4cf49155a2fa6985799a4a2cb0b5aeb8c709b250`; **both model repositories remain private**.
+- Fresh private Hugging Face snapshots for W8A16 and W4A16 were downloaded to the laptop. Each of the 14 contracted files (including weights and executable model code) passed `scripts/verify_checkpoints.py` against `config/checkpoint_hashes.json`. The updated model-card commits at this October 30 checkpoint were W8A16 `7ef1ca9dc23790d5f946aeac956dd8b9410c474b` and W4A16 `4cf49155a2fa6985799a4a2cb0b5aeb8c709b250`; both model repositories were **private at that checkpoint**.
 - BF16 and both clean-Hub GPTQ snapshots completed real, sequential RTX 4070 Laptop GPU inference with CPU layout on a labeled synthetic page. The localhost browser run, per-model Markdown/JSON, timings and peak device memory are in `laptop_smoke_20261030/` and `presentation_demo_20261030/`. Both low-bit server logs selected Marlin. The 48-second captioned presentation video shortens unchanged waits; it is not a benchmark or proof of arbitrary-page accuracy.
 - A one-page PDF completed all three variants and a JPEG completed W4A16 locally. The upload validator rejects invalid, encrypted and multi-page PDFs before GPU work; unsupported types are rejected with a clean replacement path.
 
@@ -30,4 +30,10 @@ independently for GitHub code and Hugging Face models.
 
 - An examiner-selected page and arbitrary document layouts are not verified until run live. A full re-execution of the three reference notebooks on a separate machine/account was not performed.
 - Redistribution rights for third-party benchmark/calibration images and offline wheelhouses have not been established; none are included in this GitHub repository.
-- The original reproduction/demo code has no owner-selected open-source license. A public GitHub **code/evidence** repository is not a public model release or a license grant; the W8A16/W4A16 Hugging Face repositories remain private pending separate explicit approval.
+- At the October 30 checkpoint, the original code license and public model approval were pending. The owner subsequently authorized an Apache-2.0 code license and public GPTQ model release; see the dated release update below.
+
+## Public release update (October 31, 2026)
+
+- The GitHub code/evidence repository now includes an Apache-2.0 `LICENSE` (SHA-256 `b8c4d7deccd236af023af1c88c4d4e8f0fc2f41914e0fb23a3ec9678fb5a8456`, byte-identical to the upstream model's license text) and a project `NOTICE`. GitHub's public API detected SPDX `Apache-2.0`.
+- Both GPTQ Hugging Face repositories are **public and ungated**. Anonymous Hub readback returned W8A16 revision `38a47cf53fc9306da32c653cf8022622be003199` and W4A16 `5e8adfa87f9f652bbae91d06e13f28a2d8e1c8e0`, each with 18 curated files, model-card `license: apache-2.0`, the unchanged upstream LICENSE, and a new modification `NOTICE`. Remote weight LFS sizes and SHA-256 still match the original run manifest. See `public_model_release_20261031.json` for the full file inventory and independent anonymous small-file hash checks.
+- Neither public release includes calibration/benchmark images, PP-DocLayoutV3 weights, or offline wheelhouses. The local laptop demo remains a functional smoke test on supplied synthetic and one-page PDF/JPEG inputs, not a benchmark replication or an all-input guarantee.

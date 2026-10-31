@@ -1,0 +1,108 @@
+{
+  "checked_utc": "2026-10-31T03:09:05.732116+00:00",
+  "source": "unauthenticated Hugging Face model_info + pinned small-file readback",
+  "base_model": "PaddlePaddle/PaddleOCR-VL-1.6",
+  "base_revision": "c5630abae1d940eafe0697512a0325494b02ab42",
+  "models": [
+    {
+      "variant": "W8A16",
+      "repo_id": "adityatrha/PaddleOCR-VL-1.6-GPTQ-W8A16-G128",
+      "revision": "38a47cf53fc9306da32c653cf8022622be003199",
+      "visibility": "public",
+      "gated": false,
+      "license": "Apache-2.0",
+      "file_count": 18,
+      "files": [
+        ".gitattributes",
+        "LICENSE",
+        "NOTICE",
+        "README.md",
+        "chat_template.jinja",
+        "config.json",
+        "configuration_paddleocr_vl.py",
+        "generation_config.json",
+        "image_processing_paddleocr_vl.py",
+        "model.safetensors",
+        "modeling_paddleocr_vl.py",
+        "processing_paddleocr_vl.py",
+        "processor_config.json",
+        "recipe.yaml",
+        "scope_audit.json",
+        "scope_audit.pre_quantization.json",
+        "tokenizer.json",
+        "tokenizer_config.json"
+      ],
+      "weight": {
+        "bytes": 1525406352,
+        "sha256": "b9f9464a0b2dddfdfa1d608b350e28eedb5e0aca78777c45abede9d850baee08"
+      },
+      "release_text": {
+        "README.md": {
+          "bytes": 5668,
+          "sha256": "c29edd23af9a891deb654531e8706b71c8188e132ae4893c8a4f7ebd19998d3c"
+        },
+        "LICENSE": {
+          "bytes": 11376,
+          "sha256": "b8c4d7deccd236af023af1c88c4d4e8f0fc2f41914e0fb23a3ec9678fb5a8456"
+        },
+        "NOTICE": {
+          "bytes": 1042,
+          "sha256": "f067ebbe0b2434fd35558db3f48ed6357db576d4e06db152be20eeb9c7cd0294"
+        }
+      }
+    },
+    {
+      "variant": "W4A16",
+      "repo_id": "adityatrha/PaddleOCR-VL-1.6-GPTQ-W4A16-G128",
+      "revision": "5e8adfa87f9f652bbae91d06e13f28a2d8e1c8e0",
+      "visibility": "public",
+      "gated": false,
+      "license": "Apache-2.0",
+      "file_count": 18,
+      "files": [
+        ".gitattributes",
+        "LICENSE",
+        "NOTICE",
+        "README.md",
+        "chat_template.jinja",
+        "config.json",
+        "configuration_paddleocr_vl.py",
+        "generation_config.json",
+        "image_processing_paddleocr_vl.py",
+        "model.safetensors",
+        "modeling_paddleocr_vl.py",
+        "processing_paddleocr_vl.py",
+        "processor_config.json",
+        "recipe.yaml",
+        "scope_audit.json",
+        "scope_audit.pre_quantization.json",
+        "tokenizer.json",
+        "tokenizer_config.json"
+      ],
+      "weight": {
+        "bytes": 1326340328,
+        "sha256": "0b1c0231bb3edb7b3ee4d46e689bdb933fadedda40f59fcd917d63caa5a4b355"
+      },
+      "release_text": {
+        "README.md": {
+          "bytes": 5635,
+          "sha256": "01b934c4b60731b6f9ee0c7efa75088562691ec62326a31a7c98551d106fc463"
+        },
+        "LICENSE": {
+          "bytes": 11376,
+          "sha256": "b8c4d7deccd236af023af1c88c4d4e8f0fc2f41914e0fb23a3ec9678fb5a8456"
+        },
+        "NOTICE": {
+          "bytes": 1042,
+          "sha256": "289cfc8b6a0c50fa8df2691fd81ad9fc790f5936197d9343ab5c50683a84e8a4"
+        }
+      }
+    }
+  ],
+  "exclusions": [
+    "PP-DocLayoutV3",
+    "OmniDocBench images",
+    "DocLayNet calibration images",
+    "offline dependency wheelhouse"
+  ]
+}
